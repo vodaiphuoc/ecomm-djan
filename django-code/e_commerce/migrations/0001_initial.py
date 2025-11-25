@@ -112,7 +112,7 @@ class Migration(migrations.Migration):
                 ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
                 ('image_url', models.URLField()),
                 ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('product', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='e_commerce.product')),
+                ('product', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name = 'images' , to='e_commerce.product')),
             ],
         ),
         migrations.CreateModel(
@@ -122,7 +122,7 @@ class Migration(migrations.Migration):
                 ('content', models.TextField()),
                 ('score', models.BooleanField(default=None, null=True)),
                 ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('product', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='e_commerce.product')),
+                ('product', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name = 'reviews', to='e_commerce.product')),
                 ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
             ],
         ),

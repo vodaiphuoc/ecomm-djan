@@ -9,19 +9,20 @@ from pathlib import Path
 import random
 import string
 
-
 from e_commerce.models import AppUser as AppUserModel
 from e_commerce.models import Product as ProductModel
 from e_commerce.models import ProductImg as ProductImgModel
 from e_commerce.models import Category as CategoryModel
 from e_commerce.models import Review as ReviewModel
 
-print(Path(__file__).resolve().parent.parent.parent.parent)
+from e_commerce.ml_service import get_predictor_instance
 
 def _random_string(length:int = 10):
     return ''.join(random.choices(string.ascii_letters + string.digits, k=length))
 
 def load_product_data(apps: Apps, schema_editor):
+    model_instance = get_predictor_instance()
+
     db_alias = schema_editor.connection.alias
 
     AppUser = apps.get_model('e_commerce', 'AppUser')
@@ -72,7 +73,7 @@ def load_product_data(apps: Apps, schema_editor):
 
         for prod_data in data:
             product_data = prod_data['product_data']
-            review_data = prod_data['review']
+            review_data: list[str] = prod_data['review']
 
             # make child categories
             parent_category = get_object_or_404(Category, name=parent_cat, parent=None)
@@ -106,6 +107,9 @@ def load_product_data(apps: Apps, schema_editor):
 
             # insert reviews
             if len(review_data) > 0:
+                # infer review text as batch prediction
+                predict_sentiment: list[bool] = model_instance.forward(review_data)
+                assert len(predict_sentiment) == len(review_data), f'type predict : {type(predict_sentiment)}, {predict_sentiment}'
                 
                 # make random user
                 user_list = []
@@ -113,15 +117,16 @@ def load_product_data(apps: Apps, schema_editor):
                     rand_last_name = _random_string(5)
                     rand_first_name = _random_string(7)
                     rand_email = f'{_random_string(13)}@gmail.com'
-                    user_list.append(AppUser(
-                        password = _random_string(12), 
-                        is_superuser = False, 
-                        username = f'{rand_first_name} {rand_last_name}', 
-                        first_name = rand_first_name,
-                        last_name = rand_last_name, 
-                        email = rand_email, 
-                        is_staff = True,
-                        fullname = f'{rand_first_name} {rand_last_name}'
+                    user_list.append(
+                        AppUser(
+                            password = _random_string(12),
+                            is_superuser = False, 
+                            username = f'{rand_first_name} {rand_last_name}', 
+                            first_name = rand_first_name,
+                            last_name = rand_last_name, 
+                            email = rand_email, 
+                            is_staff = True,
+                            fullname = f'{rand_first_name} {rand_last_name}'
                     ))
 
                 # insert users
@@ -136,9 +141,10 @@ def load_product_data(apps: Apps, schema_editor):
                     Review(
                         product = new_product,
                         user = user,
-                        content = review_content
+                        content = review_content,
+                        score = _score
                     )
-                    for user, review_content in zip(list_user_model, review_data)
+                    for user, review_content, _score in zip(list_user_model, review_data, predict_sentiment)
                 ])
 
 
