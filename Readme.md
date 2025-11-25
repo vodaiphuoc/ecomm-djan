@@ -13,6 +13,7 @@ to be update to match models
 - fasttext
 
 ### project structure overview
+```
 .
 |-- Readme.md
 |-- crawl_data2db               <- init web data here
@@ -30,3 +31,4 @@ to be update to match models
     |-- output
     |-- requirements.txt
     `-- train_model.py
+```
