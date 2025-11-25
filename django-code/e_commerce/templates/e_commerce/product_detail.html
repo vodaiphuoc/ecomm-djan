@@ -1,0 +1,90 @@
+{% extends './base.html' %}
+
+{% block title %}{{ product.name }} - E-commerce Store{% endblock %}
+
+{% block content %}
+<div class="card mb-3">
+    <div class="row g-0">
+        <div class="col-md-4">
+            <div class="product-image-gallery">
+                <div class="main-image-display mb-3 text-center">
+                    {% if product.images.all %}
+                        <img 
+                            src="{{ product.images.first.image_url }}" 
+                            alt="{{ product.name }} main image" 
+                            class="img-fluid rounded shadow-sm" 
+                            id="mainProductImage"
+                        >
+                    {% else %}
+                        <img 
+                            src="https://via.placeholder.com/600x600?text=No+Image" 
+                            alt="No Image Available" 
+                            class="img-fluid rounded shadow-sm"
+                        >
+                    {% endif %}
+                </div>
+            
+                <div class="thumbnail-strip d-flex flex-wrap justify-content-center gap-2">
+                    {% for img in product.images.all %}
+                        <img 
+                            src="{{ img.image_url }}" 
+                            alt="{{ product.name }} thumbnail {{ forloop.counter }}" 
+                            class="img-thumbnail rounded-3 thumbnail-item {% if forloop.first %}active{% endif %}" 
+                            data-large-image="{{ img.image_url }}"
+                        >
+                    {% empty %}
+                    {% endfor %}
+                </div>
+            </div>
+
+        </div>
+        <div class="col-md-8">
+            <div class="card-body">
+                <h2 class="card-title">{{ product.name }}</h2>
+                <h4 class="card-text text-primary mb-3">${{ product.price }}</h4>
+                <p class="card-text">{{ product.description | safe }}</p>
+                
+                <a href="{% url 'e_commerce:cart_add' product.id %}" class="btn btn-lg btn-primary mt-3">Add to Cart</a>
+                <a href="{% url 'e_commerce:product_list' %}" class="btn btn-lg btn-outline-secondary mt-3 ms-2">
+                    Back to List
+                </a>
+            </div>
+
+            <div class="card-body">
+                <h4 class="card-title mb-4 border-bottom pb-2">
+                    Customer Reviews (<span class="text-primary">{{ product.reviews.count }}</span>)
+                </h4>
+            
+                {% if product.reviews.all %}
+                    <div class="review-list">
+                        
+                        {% for review in product.reviews.all %}
+                            <div class="card shadow-sm mb-4 review-card">
+                                <div class="card-body">
+                                    
+                                    <div class="d-flex justify-content-between align-items-center mb-2 border-bottom pb-2">
+                                        <div class="fw-bold text-dark">
+                                            <i class="bi bi-person-circle me-1"></i> User: {{ review.user.username }}
+                                        </div>
+                                    </div>
+
+                                    <p class="card-text text-muted mb-0">
+                                        {{ review.content }}
+                                    </p>
+
+                                </div>
+                            </div>
+                        {% endfor %}
+            
+                    </div>
+                {% else %}
+                    <p class="text-center text-muted py-3">No reviews yet. Be the first to share your thoughts!</p>
+                {% endif %}
+            
+            </div>
+
+
+        </div>
+    </div>
+</div>
+{% endblock %}
