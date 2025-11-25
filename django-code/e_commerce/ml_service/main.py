@@ -102,7 +102,13 @@ class ModelServing(object):
         except Exception as e:
             print(e)
 
-    def forward(self, text:str)->bool:
-        processed_text = self._pre_processing.forward(text)
-        (label,), prob = self._model.predict(processed_text)
-        return int(label) == 1
+    def forward(self, text:str | list[str])->bool | list[bool]:
+        output_single = False
+        if isinstance(text, str):
+            text = [text]
+            output_single = True
+        processed_text = [self._pre_processing.forward(_text) for _text in text]
+        labels, probs = self._model.predict(processed_text)
+        
+        outputs = [int(ele[0][-1]) == 1  for ele in labels]
+        return outputs[0] if output_single else outputs

@@ -1,4 +1,4 @@
-from main import ModelServing
+from .main import ModelServing
 
 SENTIMENT_PREDICTOR_INSTANCE = ModelServing() 
 
