@@ -1,0 +1,9 @@
+Django
+Pillow
+python-dotenv
+mysqlclient
+Celery
+emoji
+underthesea
+fasttext
+huggingface_hub

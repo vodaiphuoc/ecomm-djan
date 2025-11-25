@@ -1,0 +1,14 @@
+{% extends './base.html' %}
+
+{% block title %}Order Created - E-commerce Store{% endblock %}
+
+{% block content %}
+<div class="text-center mt-5">
+    <h1 class="text-success mb-4">Order Created Successfully!</h1>
+    <p class="lead">Thank you for your order, {{ order.first_name }}.</p>
+    <p>Your order ID is <strong>#{{ order.id }}</strong>.</p>
+    <p>Total Amount: <strong>${{ order.total_cost }}</strong></p>
+
+    <a href="{% url 'store:product_list' %}" class="btn btn-primary mt-4">Continue Shopping</a>
+</div>
+{% endblock %}

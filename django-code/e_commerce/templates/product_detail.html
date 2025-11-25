@@ -1,0 +1,32 @@
+{% extends './base.html' %}
+
+{% block title %}{{ product.name }} - E-commerce Store{% endblock %}
+
+{% block content %}
+<div class="card mb-3">
+    <div class="row g-0">
+        <div class="col-md-4">
+            {% if product.image %}
+                <img src="{{ product.image.url }}" class="img-fluid rounded-start" alt="{{ product.name }}">
+            {% else %}
+            <div class="bg-light d-flex align-items-center justify-content-center h-100" style="min-height: 300px;">
+                <span class="text-muted">No Image</span>
+            </div>
+            {% endif %}
+        </div>
+        <div class="col-md-8">
+            <div class="card-body">
+                <h2 class="card-title">{{ product.name }}</h2>
+                <h4 class="card-text text-primary mb-3">${{ product.price }}</h4>
+                <p class="card-text">{{ product.description | safe }}</p>
+                <p class="card-text"><small class="text-muted">Last updated {{ product.updated_at|date:"M d, Y"
+                        }}</small></p>
+
+                <a href="{% url 'e_commerce:cart_add' product.id %}" class="btn btn-lg btn-primary mt-3">Add to Cart</a>
+                <a href="{% url 'e_commerce:product_list' %}" class="btn btn-lg btn-outline-secondary mt-3 ms-2">Back to
+                    List</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,10 @@
+__pycache__
+.env
+test.env
+test.py
+**/test.py
+train_env
+web_env
+erd.jpeg
+dev.note.md
+*.bin
