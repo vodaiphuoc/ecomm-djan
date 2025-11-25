@@ -3,7 +3,6 @@ import os
 from dotenv import load_dotenv
 
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # load secrets
@@ -56,7 +55,8 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'mysite.wsgi.application'
+# WSGI_APPLICATION = 'mysite.wsgi.application'
+ASGI_APPLICATION = 'mysite.asgi.application'
 
 # Database
 DATABASES = {
@@ -103,25 +103,26 @@ USE_I18N = True
 USE_TZ = True
 
 STATIC_URL = 'static/'
-STATICFILES_DIRS = [BASE_DIR / 'static']
+STATICFILES_FINDERS = [
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+]
 
-# Media files (Uploaded images)
-MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Session Configuration
-SESSION_ENGINE = 'django.contrib.sessions.backends.db' # Default, stores in DB
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 SESSION_COOKIE_AGE = 1209600 # 2 weeks
 CART_SESSION_ID = 'cart'
 
 
 # Celery Configuration
-CELERY_BROKER_URL = 'redis://redis:6379/0' 
-CELERY_RESULT_BACKEND = 'redis://redis:6379/0'
-CELERY_ACCEPT_CONTENT = ['json']
-CELERY_TASK_SERIALIZER = 'json'
-CELERY_RESULT_SERIALIZER = 'json'
-CELERY_TIMEZONE = 'UTC'
+CELERY_BROKER_PORT = os.environ['CELERY_BROKER_PORT']
+CELERY_BROKER_URL = f'redis://redis:{CELERY_BROKER_PORT}/0' 
+CELERY_RESULT_BACKEND = f'redis://redis:{CELERY_BROKER_PORT}/0'
+CELERY_ACCEPT_CONTENT = [os.environ['CELERY_ACCEPT_CONTENT']]
+CELERY_TASK_SERIALIZER = os.environ['CELERY_TASK_SERIALIZER']
+CELERY_RESULT_SERIALIZER = os.environ['CELERY_RESULT_SERIALIZER']
+CELERY_TIMEZONE = os.environ['CELERY_TIMEZONE']
