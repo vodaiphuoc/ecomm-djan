@@ -1,8 +1,8 @@
 from celery import shared_task
 from django.db.models import Avg
-from models import Review, Product
+from .models import Review, Product
 
-from ml_service import get_predictor_instance
+from .ml_service import get_predictor_instance
 import uuid
 
 @shared_task
@@ -21,8 +21,9 @@ def predict_ml_score(review_id: uuid.UUID, review_text: str):
         # 3. Update the Review instance with the predicted score
         Review.objects.filter(pk=review_id).update(score=predicted_score)
 
-        # 3. Call the next task to calculate the new mean rating for the product
+        # 4. Call the next task to calculate the new mean rating for the product
         rating_instance = Review.objects.get(pk=review_id)
+
         _update_product_mean_rating.delay(rating_instance.product_id)
         
     except Review.DoesNotExist:
@@ -39,7 +40,7 @@ def _update_product_mean_rating(product_id:int):
         product = Product.objects.get(pk=product_id)
         
         # Calculate the mean based on the 'score' field
-        average_result = product.ratings.exclude(ml_score__isnull=True).aggregate(Avg('score'))
+        average_result = product.reviews.exclude(ml_score__isnull=True).aggregate(Avg('score'))
         
         # Update the Product and save
         product.mean_rating = average_result['score__avg']

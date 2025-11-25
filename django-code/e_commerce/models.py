@@ -59,7 +59,7 @@ class ProductImg(models.Model):
         default=uuid.uuid4,
         editable=False
     )
-    product = models.ForeignKey(Product, on_delete= models.CASCADE)
+    product = models.ForeignKey(Product, on_delete= models.CASCADE, related_name = "images")
     image_url = models.URLField(null= False)
     created_at = models.DateTimeField(auto_now_add=True)
 

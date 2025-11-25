@@ -8,7 +8,7 @@ from django.contrib import messages
 from .models import Product, Order, OrderItem
 from .cart import Cart
 
-TEMPLATE_FOLDER_NAME = 'templates/e-commerce'
+TEMPLATE_FOLDER_NAME = 'e_commerce'
 
 def product_list(request: HttpRequest):
     query = request.GET.get('q')
@@ -20,11 +20,14 @@ def product_list(request: HttpRequest):
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     
-    return render(request, f'product_list.html', {'page_obj': page_obj, 'query': query})
+    return render(request, f'{TEMPLATE_FOLDER_NAME}/product_list.html', {'page_obj': page_obj, 'query': query})
 
-def product_detail(request, id):
-    product = get_object_or_404(Product, id=id)
-    return render(request, f'product_detail.html', {'product': product})
+def product_detail(request: HttpRequest, id):
+    product = get_object_or_404(
+        Product.objects.prefetch_related('reviews__user'),
+        id=id
+    )
+    return render(request, f'{TEMPLATE_FOLDER_NAME}/product_detail.html', {'product': product})
 
 @require_POST
 def cart_add(request: HttpRequest, product_id: int):
