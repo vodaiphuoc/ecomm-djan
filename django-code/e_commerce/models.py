@@ -12,15 +12,19 @@ class AppUser(AbstractUser):
         default=uuid.uuid4,
         editable=False
     )
-    fullname = models.CharField(max_length=50)
+    
+    email = models.EmailField(
+        unique=True,
+        null=False,
+        blank=False
+    )
+
     avatar = models.URLField(null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     @property
     def get_initial(self):
-        if self.fullname:
-            return self.fullname[0].upper()
         return self.username[0].upper()
 
     @property
@@ -60,7 +64,7 @@ class Product(models.Model):
     category = models.ForeignKey(Category, on_delete = models.CASCADE)
     description = models.TextField(blank=True)
     brand_name = models.CharField(max_length=100)
-    price = models.DecimalField(max_digits=10, decimal_places=2)
+    price = models.IntegerField()
     stock = models.IntegerField()
     is_active = models.BooleanField()
     thumbnail_url = models.URLField(null= False)
