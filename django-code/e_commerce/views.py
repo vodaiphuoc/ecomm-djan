@@ -1,14 +1,45 @@
+from django.contrib.auth import login
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.decorators.http import require_POST
 from django.http import HttpRequest
-
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import UserPassesTestMixin
+from django.contrib.auth.views import LoginView
 from django.core.paginator import Paginator
 from django.db.models import Q
 from django.contrib import messages
 from .models import Product, Order, OrderItem
 from .cart import Cart
+from .forms import AppUserCreationForm
 
 TEMPLATE_FOLDER_NAME = 'e_commerce'
+
+def register(request):
+    if request.method == 'POST':
+        form = AppUserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user) 
+            return redirect(f'{TEMPLATE_FOLDER_NAME}/')
+    else:
+        form = AppUserCreationForm()
+    
+    return render(request, f'{TEMPLATE_FOLDER_NAME}/register.html', {'form': form})
+
+class CustomLoginView(UserPassesTestMixin, LoginView):
+    template_name = f'{TEMPLATE_FOLDER_NAME}/login.html'
+
+    def test_func(self)->bool:
+        r"""return True if the user is NOT authenticated"""
+        return not self.request.user.is_authenticated
+
+    def handle_no_permission(self):
+        next_url = self.request.GET.get('next')
+        print('next url: ', next_url)
+        if next_url:
+            return redirect(next_url)
+        
+        return redirect(f'/')
 
 def product_list(request: HttpRequest):
     query = request.GET.get('q')
@@ -30,6 +61,7 @@ def product_detail(request: HttpRequest, id):
     return render(request, f'{TEMPLATE_FOLDER_NAME}/product_detail.html', {'product': product})
 
 @require_POST
+@login_required(login_url='/login/')
 def cart_add(request: HttpRequest, product_id: int):
     cart = Cart(request)
     product = get_object_or_404(Product, id=product_id)
@@ -45,7 +77,7 @@ def cart_remove(request, product_id):
 
 def cart_detail(request):
     cart = Cart(request)
-    return render(request, f'cart.html', {'cart': cart})
+    return render(request, f'{TEMPLATE_FOLDER_NAME}/cart.html', {'cart': cart})
 
 def checkout(request):
     cart = Cart(request)
@@ -74,3 +106,4 @@ def checkout(request):
         return render(request, f'order_created.html', {'order': order})
         
     return redirect(f'{TEMPLATE_FOLDER_NAME}:cart_detail')
+
