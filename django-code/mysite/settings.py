@@ -23,6 +23,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.humanize',
     'e_commerce',
 ]
 
@@ -94,13 +95,13 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # Internationalization
 
-LANGUAGE_CODE = 'en-us'
-
 TIME_ZONE = 'UTC'
-
 USE_I18N = True
-
+LANGUAGE_CODE = 'vi'
 USE_TZ = True
+
+USE_THOUSAND_SEPARATOR = True
+NUMBER_GROUPING = 3
 
 STATIC_URL = 'static/'
 STATICFILES_FINDERS = [
