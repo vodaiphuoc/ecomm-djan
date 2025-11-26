@@ -19,15 +19,15 @@
         </thead>
         <tbody>
             {% for item in cart %}
-            <tr>
-                <td>{{ item.product.name }}</td>
-                <td>{{ item.quantity }}</td>
-                <td>${{ item.price }}</td>
-                <td>${{ item.total_price }}</td>
-                <td>
-                    <a href="{% url 'store:cart_remove' item.product.id %}" class="btn btn-sm btn-danger">Remove</a>
-                </td>
-            </tr>
+                <tr>
+                    <td>{{ item.product.name }}</td>
+                    <td>{{ item.quantity }}</td>
+                    <td>${{ item.price }}</td>
+                    <td>${{ item.total_price }}</td>
+                    <td>
+                        <a href="{% url 'e_commerce:cart_remove' item.product.id %}" class="btn btn-sm btn-danger">Remove</a>
+                    </td>
+                </tr>
             {% endfor %}
             <tr class="fw-bold">
                 <td colspan="3" class="text-end">Total:</td>
@@ -43,7 +43,7 @@
         Checkout
     </div>
     <div class="card-body">
-        <form action="{% url 'store:checkout' %}" method="post">
+        <form action="{% url 'e_commerce:checkout' %}" method="post">
             {% csrf_token %}
             <div class="row mb-3">
                 <div class="col-md-6">
@@ -79,6 +79,6 @@
 </div>
 {% else %}
 <p class="text-muted">Your cart is empty.</p>
-<a href="{% url 'store:product_list' %}" class="btn btn-primary">Continue Shopping</a>
+<a href="{% url 'e_commerce:product_list' %}" class="btn btn-primary">Continue Shopping</a>
 {% endif %}
 {% endblock %}
