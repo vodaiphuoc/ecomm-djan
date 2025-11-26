@@ -1,0 +1,7 @@
+<div class="review-form-container">
+    <h3>Submit Your Review</h3>
+    <form method="post" action="{% url 'submit_review' product.id %}">
+        {% csrf_token %}
+        {{ form.as_p }} <button type="submit">Post Review</button>
+    </form>
+</div>
