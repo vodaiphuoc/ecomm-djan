@@ -89,18 +89,20 @@ class Order(models.Model):
         max_length=20,
         validators=[
             RegexValidator(
-                regex=r'^\+?1?\d{9,15}$',
-                message="Phone number must be entered in the format: '+999999999'. Up to 15 digits allowed."
+                regex=r'\d{10}$',
+                message="Phone number must have 15 digits"
             )
-        ]
+        ],
+        help_text="Số điện thoại liên hệ"
     )
-    address = models.CharField(max_length=250)
+    address = models.CharField(max_length=250, help_text= "Địa chỉ cần giao")
     
     payment_status = models.CharField(
         max_length=7,
         choices=[('FAILED','FAILED'), ('PENDING','PENDING'), ('SUCCESS','SUCCESS')],
         default='PENDING'
     )
+    total_cost = models.IntegerField()
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
