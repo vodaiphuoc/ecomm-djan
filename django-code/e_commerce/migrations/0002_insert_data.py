@@ -121,7 +121,7 @@ def load_product_data(apps: Apps, schema_editor):
                         AppUser(
                             password = _random_string(12),
                             is_superuser = False, 
-                            username = f'{rand_first_name} {rand_last_name}', 
+                            username = f'{rand_first_name}_{rand_last_name}',
                             first_name = rand_first_name,
                             last_name = rand_last_name, 
                             email = rand_email, 
