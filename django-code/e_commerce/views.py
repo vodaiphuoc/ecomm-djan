@@ -10,7 +10,9 @@ from django.db.models import Q
 from django.contrib import messages
 from .models import Product, Order, OrderItem
 from .cart import Cart
-from .forms import AppUserCreationForm
+from .forms import AppUserCreationForm, OrderForm
+from django.views.decorators.cache import cache_control
+from django.db import transaction
 
 TEMPLATE_FOLDER_NAME = 'e_commerce'
 
@@ -20,7 +22,7 @@ def register(request):
         if form.is_valid():
             user = form.save()
             login(request, user) 
-            return redirect(f'{TEMPLATE_FOLDER_NAME}/')
+            return redirect(f'/')
     else:
         form = AppUserCreationForm()
     
@@ -53,6 +55,7 @@ def product_list(request: HttpRequest):
     
     return render(request, f'{TEMPLATE_FOLDER_NAME}/product_list.html', {'page_obj': page_obj, 'query': query})
 
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def product_detail(request: HttpRequest, id):
     product = get_object_or_404(
         Product.objects.prefetch_related('reviews__user'),
@@ -69,41 +72,79 @@ def cart_add(request: HttpRequest, product_id: int):
     messages.success(request, "Added to cart")
     return redirect(f'{TEMPLATE_FOLDER_NAME}:cart_detail')
 
-def cart_remove(request, product_id):
+def cart_remove(request: HttpRequest, product_id):
     cart = Cart(request)
     product = get_object_or_404(Product, id=product_id)
     cart.remove(product)
     return redirect(f'{TEMPLATE_FOLDER_NAME}:cart_detail')
 
-def cart_detail(request):
+def cart_detail(request: HttpRequest):
     cart = Cart(request)
-    return render(request, f'{TEMPLATE_FOLDER_NAME}/cart.html', {'cart': cart})
+    return render(request, f'{TEMPLATE_FOLDER_NAME}/cart.html', {'cart': cart, 'form': OrderForm()})
 
-def checkout(request):
+@require_POST
+def checkout(request: HttpRequest):
     cart = Cart(request)
-    if request.method == 'POST':
-        # Create Order
-        order = Order.objects.create(
-            first_name=request.POST.get('first_name'),
-            last_name=request.POST.get('last_name'),
-            email=request.POST.get('email'),
-            address=request.POST.get('address'),
-            postal_code=request.POST.get('postal_code'),
-            city=request.POST.get('city'),
-            total_cost=cart.get_total_price()
-        )
-        
-        for item in cart:
-            OrderItem.objects.create(
-                order=order,
-                product=item['product'],
-                price=item['price'],
-                quantity=item['quantity']
-            )
-            
-        cart.clear()
-        messages.success(request, "Order created successfully!")
-        return render(request, f'order_created.html', {'order': order})
-        
-    return redirect(f'{TEMPLATE_FOLDER_NAME}:cart_detail')
+    
+    form = OrderForm(request.POST)
 
+    if form.is_valid():
+        try:
+            with transaction.atomic():
+                order: Order = form.save(commit=False)
+                
+                # Assign user if authenticated
+                if request.user.is_authenticated:
+                    order.user = request.user
+                
+                order.total_cost = cart.get_total_price()
+                order.save()
+
+                
+                order_items_to_commit = []
+                for item in cart:
+                    product = item['product']
+                    quantity = item['quantity']
+                    
+                    
+                    # Stock check
+                    if product.stock < quantity:
+                        raise ValueError(f"Not enough stock for {product.name}.")
+                    
+
+                    order_items_to_commit.append(
+                        OrderItem(
+                            order=order,
+                            product=product,
+                            quantity=quantity
+                    ))
+                    
+                    # Deduct stock immediately
+                    product.stock -= quantity
+                    product.save()
+                
+                OrderItem.objects.bulk_create(order_items_to_commit) 
+                
+                
+                # Clear cart and success message
+                cart.clear()
+                messages.success(request, "Order created successfully! 🎉")
+                
+                return render(request, f'{TEMPLATE_FOLDER_NAME}/order_created.html', {'order': order})
+
+        except ValueError as e:
+            # Handle out-of-stock
+            print(e)
+            messages.error(request, f"Order failed: {e}")
+            return redirect(f'{TEMPLATE_FOLDER_NAME}:cart_detail')
+
+        except Exception as e:
+            print(e)
+            # Handle general database/server errors
+            messages.error(request, "An unexpected error occurred during checkout.")
+            return redirect(f'{TEMPLATE_FOLDER_NAME}:cart_detail')
+    
+    # the form is NOT valid
+    else:
+        messages.error(request, "Please correct the errors in the form.")
+        return render(request, f'{TEMPLATE_FOLDER_NAME}/cart.html', {'form': form, 'cart': cart})
