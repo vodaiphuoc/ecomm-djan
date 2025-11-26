@@ -43,43 +43,57 @@
                 <h2 class="card-title">{{ product.name }}</h2>
                 <h4 class="card-text text-primary mb-3">${{ product.price }}</h4>
                 <p class="card-text">{{ product.description | safe }}</p>
-                
-                <a href="{% url 'e_commerce:cart_add' product.id %}" class="btn btn-lg btn-primary mt-3">Add to Cart</a>
-                <a href="{% url 'e_commerce:product_list' %}" class="btn btn-lg btn-outline-secondary mt-3 ms-2">
-                    Back to List
-                </a>
+
+                <form method="post" action="{% url 'e_commerce:cart_add' product.id %}" class="logout-form">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-lg btn-primary mt-3">Add to Cart</button>
+                </form>
             </div>
 
             <div class="card-body">
                 <h4 class="card-title mb-4 border-bottom pb-2">
                     Customer Reviews (<span class="text-primary">{{ product.reviews.count }}</span>)
                 </h4>
-            
-                {% if product.reviews.all %}
-                    <div class="review-list">
-                        
-                        {% for review in product.reviews.all %}
-                            <div class="card shadow-sm mb-4 review-card">
-                                <div class="card-body">
-                                    
-                                    <div class="d-flex justify-content-between align-items-center mb-2 border-bottom pb-2">
-                                        <div class="fw-bold text-dark">
-                                            <i class="bi bi-person-circle me-1"></i> User: {{ review.user.username }}
+
+                {% if user.is_authenticated %}
+                    {% if product.reviews.all %}
+                        <div class="review-list">
+                            
+                            {% for review in product.reviews.all %}
+                                <div class="card shadow-sm mb-4 review-card">
+                                    <div class="card-body">
+                                        
+                                        <div class="d-flex justify-content-between align-items-center mb-2 border-bottom pb-2">
+                                            <div class="fw-bold text-dark">
+                                                <i class="bi bi-person-circle me-1"></i> User: {{ review.user.username }}
+                                            </div>
                                         </div>
+
+                                        <p class="card-text text-muted mb-0">
+                                            {{ review.content }}
+                                        </p>
+
                                     </div>
-
-                                    <p class="card-text text-muted mb-0">
-                                        {{ review.content }}
-                                    </p>
-
                                 </div>
-                            </div>
-                        {% endfor %}
-            
-                    </div>
+                            {% endfor %}
+                
+                        </div>
+                    {% else %}
+                        <p class="text-center text-muted py-3">No reviews yet. Be the first to share your thoughts!</p>
+                    {% endif %}
+
                 {% else %}
-                    <p class="text-center text-muted py-3">No reviews yet. Be the first to share your thoughts!</p>
+                    <div style="display: flex;justify-content: center;">
+                        <a class="nav-link"
+                            href="{% url 'e_commerce:login' %}?next={{ request.path }}">
+                            <u>Login</u>
+                        </a>
+                        <p class="card-text ms-1">to see full reviews of all products</p>
+                    </div>
                 {% endif %}
+
+
+                
             
             </div>
 
