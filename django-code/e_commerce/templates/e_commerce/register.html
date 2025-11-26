@@ -1,0 +1,41 @@
+{% extends "./base.html" %}
+
+{% block content %}
+<div class="login-container"> {# Reusing the container style #}
+    <div class="login-card"> {# Reusing the card style #}
+        <h2 class="card-title">Create an Account</h2>
+        
+        <form method="post" class="login-form"> {# Reusing the form style #}
+            {% csrf_token %}
+            
+            {% for field in form %}
+            <div class="form-group">
+                {{ field.label_tag }}
+                {{ field }}
+                
+                {% if field.help_text %}
+                    <small class="form-text text-muted">{{ field.help_text }}</small>
+                {% endif %}
+                
+                {% for error in field.errors %}
+                    <div class="error-message">{{ error }}</div>
+                {% endfor %}
+            </div>
+            {% endfor %}
+            
+            <button type="submit" class="btn btn-primary">Register</button>
+            
+        </form>
+
+        {% if form.non_field_errors %}
+            {% for error in form.non_field_errors %}
+                <p class="error-message general-error">{{ error }}</p>
+            {% endfor %}
+        {% endif %}
+        
+        <p class="register-link"> {# Reusing the link style #}
+            Already have an account? <a href="{% url 'e_commerce:login' %}">Log in here</a>.
+        </p>
+    </div>
+</div>
+{% endblock content %}

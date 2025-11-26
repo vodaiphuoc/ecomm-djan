@@ -1,0 +1,50 @@
+{% extends "./base.html" %}
+
+{% block content %}
+<div class="login-container">
+    <div class="login-card">
+        <h2 class="card-title">Welcome Back</h2>
+        
+        <form method="post" class="login-form">
+            {% csrf_token %}
+            
+            {% for field in form %}
+            <div class="form-group">
+                {{ field.label_tag }}
+                {{ field }}
+                
+                {% if field.help_text %}
+                    <small class="form-text text-muted">{{ field.help_text }}</small>
+                {% endif %}
+                
+                {% for error in field.errors %}
+                    <div class="error-message">{{ error }}</div>
+                {% endfor %}
+            </div>
+            {% endfor %}
+            
+            <input type="hidden" name="next" value="{{ next }}">
+            
+            <button type="submit" class="btn btn-primary">Log In</button>
+            
+        </form>
+
+        {% if form.errors and not form.non_field_errors %}
+            <p class="error-message general-error">
+                Your username and password didn't match. Please try again.
+            </p>
+        {% endif %}
+        
+        {% if form.non_field_errors %}
+            {% for error in form.non_field_errors %}
+                <p class="error-message general-error">{{ error }}</p>
+            {% endfor %}
+        {% endif %}
+        
+        <p class="register-link">
+            Don't have an account? 
+            <a href="{% url 'e_commerce:register' %}">Sign up here</a>.
+        </p>
+    </div>
+</div>
+{% endblock content %}
