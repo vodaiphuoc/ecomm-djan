@@ -3,6 +3,7 @@
 {% block title %}{{ product.name }} - E-commerce Store{% endblock %}
 
 {% block content %}
+{% load l10n %}
 <div class="card mb-3">
     <div class="row g-0">
         <div class="col-md-4">
@@ -41,7 +42,11 @@
         <div class="col-md-8">
             <div class="card-body">
                 <h2 class="card-title">{{ product.name }}</h2>
-                <h4 class="card-text text-primary mb-3">${{ product.price }}</h4>
+                <h4 class="card-text text-primary mb-3">
+                    {% localize on %}
+                        {{ product.price }}
+                    {% endlocalize %} đ
+                </h4>
                 <p class="card-text">{{ product.description | safe }}</p>
 
                 <form method="post" action="{% url 'e_commerce:cart_add' product.id %}" class="logout-form">

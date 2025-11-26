@@ -3,6 +3,8 @@
 {% block title %}Products - E-commerce Store{% endblock %}
 
 {% block content %}
+
+{% load l10n %}
 <div class="row mb-4">
     <div class="col-md-6">
         <h1>Products</h1>
@@ -30,7 +32,12 @@
                 {% endif %}
                 <div class="card-body">
                     <h5 class="card-title">{{ product.name }}</h5>
-                    <p class="card-text text-muted">{{ product.price }} VND</p>
+                    
+                    <p class="card-text text-muted">
+                        {% localize on %}
+                            {{ product.price }}
+                        {% endlocalize %} đ
+                    </p>
                     <a href="{% url 'e_commerce:product_detail' product.id %}" class="btn btn-primary w-100">View Details</a>
                 </div>
             </div>
