@@ -3,82 +3,122 @@
 {% block title %}Your Cart - E-commerce Store{% endblock %}
 
 {% block content %}
-<h1>Your Cart</h1>
+{% load l10n %}
+<h1>Giỏ hàng của bạn</h1>
 
 {% if cart|length > 0 %}
-<div class="table-responsive mb-4">
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>Product</th>
-                <th>Quantity</th>
-                <th>Unit Price</th>
-                <th>Total Price</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for item in cart %}
+    <div class="table-responsive mb-4">
+        <table class="table table-striped">
+            <thead>
                 <tr>
-                    <td>{{ item.product.name }}</td>
-                    <td>{{ item.quantity }}</td>
-                    <td>${{ item.price }}</td>
-                    <td>${{ item.total_price }}</td>
-                    <td>
-                        <a href="{% url 'e_commerce:cart_remove' item.product.id %}" class="btn btn-sm btn-danger">Remove</a>
-                    </td>
+                    <th>Sản phẩm</th>
+                    <th>Số lượng</th>
+                    <th>Đơn giá</th>
+                    <th>Tổng</th>
+                    <th></th>
                 </tr>
-            {% endfor %}
-            <tr class="fw-bold">
-                <td colspan="3" class="text-end">Total:</td>
-                <td>${{ cart.get_total_price }}</td>
-                <td></td>
-            </tr>
-        </tbody>
-    </table>
-</div>
+            </thead>
+            <tbody>
+                {% for item in cart %}
+                    <tr>
+                        <td>{{ item.product.name }}</td>
+                        <td>{{ item.quantity }}</td>
+                        <td>
+                            {% localize on %}
+                                {{ item.price }}
+                            {% endlocalize %} đ
+                        </td>
+                        <td>
+                            {% localize on %}
+                                {{ item.total_price }}
+                            {% endlocalize %} đ
+                        </td>
+                        <td>
+                            <a href="{% url 'e_commerce:cart_remove' item.product.id %}" class="btn btn-sm btn-danger">Xóa</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+                <tr class="fw-bold">
+                    <td colspan="3" class="text-end">Tổng giá trị đơn hàng:</td>
+                    <td>
+                        {% localize on %}
+                            {{ cart.get_total_price }}
+                        {% endlocalize %} đ
+                    </td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 
-<div class="card">
-    <div class="card-header">
-        Checkout
+    <div class="card">
+        <div class="card-header">
+            Checkout
+        </div>
+        <div class="card-body">
+            <form action="{% url 'e_commerce:checkout' %}" method="post">
+                {% csrf_token %}
+                
+                {% if form.non_field_errors %}
+                    <div class="alert alert-danger" role="alert">
+                        {% for error in form.non_field_errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        {# Render the first_name field #}
+                        {{ form.first_name.label_tag }}
+                        {{ form.first_name }}
+                        {% if form.first_name.errors %}
+                            <div class="text-danger small">{{ form.first_name.errors }}</div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-6">
+                        {# Render the last_name field #}
+                        {{ form.last_name.label_tag }}
+                        {{ form.last_name }}
+                        {% if form.last_name.errors %}
+                            <div class="text-danger small">{{ form.last_name.errors }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    {# Render the email field #}
+                    {{ form.email.label_tag }}
+                    {{ form.email }}
+                    {% if form.email.errors %}
+                        <div class="text-danger small">{{ form.email.errors }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="mb-3">
+                    {# Render the phone number field #}
+                    {{ form.phone_number.label_tag }}
+                    {{ form.phone_number }}
+                    {% if form.phone_number.errors %}
+                        <div class="text-danger small">{{ form.phone_number.errors }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="mb-3">
+                    {# Render the address field #}
+                    {{ form.address.label_tag }}
+                    {{ form.address }}
+                    {% if form.address.errors %}
+                        <div class="text-danger small">{{ form.address.errors }}</div>
+                    {% endif %}
+                </div>
+
+                <button type="submit" class="btn btn-success btn-lg w-100">Đặt Hàng</button>
+            </form>
+        </div>
     </div>
-    <div class="card-body">
-        <form action="{% url 'e_commerce:checkout' %}" method="post">
-            {% csrf_token %}
-            <div class="row mb-3">
-                <div class="col-md-6">
-                    <label for="first_name" class="form-label">First Name</label>
-                    <input type="text" class="form-control" id="first_name" name="first_name" required>
-                </div>
-                <div class="col-md-6">
-                    <label for="last_name" class="form-label">Last Name</label>
-                    <input type="text" class="form-control" id="last_name" name="last_name" required>
-                </div>
-            </div>
-            <div class="mb-3">
-                <label for="email" class="form-label">Email</label>
-                <input type="email" class="form-control" id="email" name="email" required>
-            </div>
-            <div class="mb-3">
-                <label for="address" class="form-label">Address</label>
-                <input type="text" class="form-control" id="address" name="address" required>
-            </div>
-            <div class="row mb-3">
-                <div class="col-md-6">
-                    <label for="city" class="form-label">City</label>
-                    <input type="text" class="form-control" id="city" name="city" required>
-                </div>
-                <div class="col-md-6">
-                    <label for="postal_code" class="form-label">Postal Code</label>
-                    <input type="text" class="form-control" id="postal_code" name="postal_code" required>
-                </div>
-            </div>
-            <button type="submit" class="btn btn-success btn-lg w-100">Create Order</button>
-        </form>
-    </div>
-</div>
 {% else %}
-<p class="text-muted">Your cart is empty.</p>
-<a href="{% url 'e_commerce:product_list' %}" class="btn btn-primary">Continue Shopping</a>
+    <p class="text-muted">Bạn chưa có sản phẩm nào</p>
+    <a href="{% url 'e_commerce:product_list' %}" class="btn btn-primary">Tiếp tục mua sắm</a>
 {% endif %}
 {% endblock %}
