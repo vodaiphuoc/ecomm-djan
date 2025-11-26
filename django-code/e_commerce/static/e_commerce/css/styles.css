@@ -115,7 +115,7 @@ body {
 }
 
 /* 4. Button */
-.btn {
+.btn:not(.btn-light) {
     display: block;
     width: 100%;
     padding: 12px;
@@ -133,6 +133,7 @@ body {
 .btn-primary:hover {
     background-color: #0056b3;
 }
+
 
 /* 5. Errors and Links */
 .error-message {
