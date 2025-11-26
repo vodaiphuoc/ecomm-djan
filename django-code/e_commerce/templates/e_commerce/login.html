@@ -3,7 +3,7 @@
 {% block content %}
 <div class="login-container">
     <div class="login-card">
-        <h2 class="card-title">Welcome Back</h2>
+        <h2 class="card-title">Chào mừng đã trở lại</h2>
         
         <form method="post" class="login-form">
             {% csrf_token %}
@@ -25,13 +25,13 @@
             
             <input type="hidden" name="next" value="{{ next }}">
             
-            <button type="submit" class="btn btn-primary">Log In</button>
+            <button type="submit" class="btn btn-primary">Đăng nhập</button>
             
         </form>
 
         {% if form.errors and not form.non_field_errors %}
             <p class="error-message general-error">
-                Your username and password didn't match. Please try again.
+                Username và password không khớp. Hãy thử lại.
             </p>
         {% endif %}
         
@@ -42,8 +42,8 @@
         {% endif %}
         
         <p class="register-link">
-            Don't have an account? 
-            <a href="{% url 'e_commerce:register' %}">Sign up here</a>.
+            Chưa có tài khoản? 
+            <a href="{% url 'e_commerce:register' %}">Đăng ký</a>.
         </p>
     </div>
 </div>
