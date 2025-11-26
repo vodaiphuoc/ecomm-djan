@@ -1,14 +1,15 @@
 {% extends './base.html' %}
 
-{% block title %}Order Created - E-commerce Store{% endblock %}
+{% block title %}Đơn hàng thành công - E-commerce Store{% endblock %}
 
 {% block content %}
+{% load l10n %}
 <div class="text-center mt-5">
-    <h1 class="text-success mb-4">Order Created Successfully!</h1>
-    <p class="lead">Thank you for your order, {{ order.first_name }}.</p>
+    <h1 class="text-success mb-4">Đơn hàng được tạo thành công</h1>
+    <p class="lead">Cảm ơn <strong>{{ order.user.first_name }}</strong> đã đặt hàng</p>
     <p>Your order ID is <strong>#{{ order.id }}</strong>.</p>
-    <p>Total Amount: <strong>${{ order.total_cost }}</strong></p>
+    <p>Total Amount: <strong>{% localize on %}{{ order.total_cost }}{% endlocalize %} đ</strong></p>
 
-    <a href="{% url 'store:product_list' %}" class="btn btn-primary mt-4">Continue Shopping</a>
+    <a href="{% url 'e_commerce:product_list' %}" class="btn btn-primary mt-4">Tiếp tục mua sắm</a>
 </div>
 {% endblock %}
