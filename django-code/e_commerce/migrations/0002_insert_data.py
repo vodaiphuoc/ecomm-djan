@@ -126,7 +126,6 @@ def load_product_data(apps: Apps, schema_editor):
                             last_name = rand_last_name, 
                             email = rand_email, 
                             is_staff = True,
-                            fullname = f'{rand_first_name} {rand_last_name}'
                     ))
 
                 # insert users
