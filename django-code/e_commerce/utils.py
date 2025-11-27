@@ -1,4 +1,7 @@
 import hashlib
+import qrcode
+import base64
+from io import BytesIO
 
 AVATAR_COLORS = [
     '#F44336', '#E91E63', '#9C27B0', '#673AB7', '#3F51B5', 
@@ -22,3 +25,38 @@ def get_avatar_color(identifier)->str:
     color_index = hash_int % len(AVATAR_COLORS)
     
     return AVATAR_COLORS[color_index]
+
+
+def generate_qr_code(url: str)->str:
+    """
+    Generates a QR code for the given URL and returns it as a Base64 encoded PNG string.
+    """
+    qr = qrcode.QRCode(
+        version=1,
+        error_correction=qrcode.constants.ERROR_CORRECT_L,
+        box_size=10,
+        border=4,
+    )
+    qr.add_data(url)
+    qr.make(fit=True)
+
+    img = qr.make_image(fill_color="black", back_color="white")
+
+    # Save image to a memory buffer
+    buffer = BytesIO()
+    img.save(buffer, format="PNG")
+    
+    # Encode the image data to Base64
+    qr_base64 = base64.b64encode(buffer.getvalue()).decode('utf-8')
+    
+    # Return the data URI string
+    return f"data:image/png;base64,{qr_base64}"
+
+# --- Note: In a real app, you would also need a model for a temporary token:
+# from django.db import models
+# class PaymentToken(models.Model):
+#     token = models.CharField(max_length=64, unique=True)
+#     order = models.ForeignKey(Order, on_delete=models.CASCADE)
+#     is_used = models.BooleanField(default=False)
+#     created_at = models.DateTimeField(auto_now_add=True)
+#     # TTL logic (e.g., delete tokens older than 15 minutes)

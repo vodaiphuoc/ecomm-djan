@@ -1,7 +1,20 @@
 <div class="review-form-container">
-    <h3>Submit Your Review</h3>
-    <form method="post" action="{% url 'submit_review' product.id %}">
+    <h3>Hãy submit bài review của bạn</h3>
+    {% comment %} <form method="post" action="{% url 'e_commerce:submit_review' product.id %}">
         {% csrf_token %}
-        {{ form.as_p }} <button type="submit">Post Review</button>
+        {{ review_form.as_p }} <button type="submit">Đăng review</button>
+    </form> {% endcomment %}
+
+    <form method="post" class="login-form" action="{% url 'e_commerce:submit_review' product.id %}">
+            {% csrf_token %}
+            {% for field in review_form %}
+                <div class="form-group">
+                    {{ field.label_tag }}
+                    {{ field }}
+                </div>
+            {% endfor %}
+            
+            <button type="submit" class="btn btn-primary">Đăng review</button>
     </form>
+
 </div>

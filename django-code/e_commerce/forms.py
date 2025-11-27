@@ -1,8 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
-from .models import AppUser
-from .models import Order
-
+from .models import AppUser, Order, Review
 
 class AppUserCreationForm(UserCreationForm):
 
@@ -90,4 +88,18 @@ class OrderForm(forms.ModelForm):
         labels = {
             'phone_number': 'Số  điện thoại',
             'address': 'Địa chỉ'
+        }
+
+
+class ReviewForm(forms.ModelForm):
+    class Meta:
+        model = Review
+        fields = ['content']
+
+        widgets = {
+            'content': forms.TextInput(attrs={'class': 'form-control'}),
+        }
+
+        labels = {
+            'content': 'Nội dung'
         }

@@ -51,7 +51,7 @@
 
                 <form method="post" action="{% url 'e_commerce:cart_add' product.id %}" class="logout-form">
                     {% csrf_token %}
-                    <button type="submit" class="btn btn-lg btn-primary mt-3">Add to Cart</button>
+                    <button type="submit" class="btn btn-lg btn-primary mt-3">Thêm vào giỏ hàng</button>
                 </form>
             </div>
 
@@ -61,6 +61,9 @@
                 </h4>
 
                 {% if user.is_authenticated %}
+                    {% comment %} for registered user {% endcomment %}
+
+                    {% comment %} loading reviews {% endcomment %}
                     {% if product.reviews.all %}
                         <div class="review-list">
                             
@@ -84,22 +87,25 @@
                 
                         </div>
                     {% else %}
-                        <p class="text-center text-muted py-3">No reviews yet. Be the first to share your thoughts!</p>
+                        <p class="text-center text-muted py-3">Chưa có review nào cho sản phẩm này!</p>
+                    {% endif %}
+
+                    {% comment %} load review form with condition {% endcomment %}
+                    {% if allow_to_review %}
+                        {% include "./review_form.html" %}
                     {% endif %}
 
                 {% else %}
+                {% comment %} for anonymous user {% endcomment %}
                     <div style="display: flex;justify-content: center;">
                         <a class="nav-link"
                             href="{% url 'e_commerce:login' %}?next={{ request.path }}">
-                            <u>Login</u>
+                            <u>Đăng nhập</u>
                         </a>
-                        <p class="card-text ms-1">to see full reviews of all products</p>
+                        <p class="card-text ms-1">để xem tất cả review</p>
                     </div>
                 {% endif %}
 
-
-                
-            
             </div>
 
 

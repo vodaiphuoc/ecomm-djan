@@ -84,7 +84,7 @@ class ProductImg(models.Model):
 
 ################## Order and Oder item ##################
 class Order(models.Model):
-    user = models.ForeignKey(AppUser, on_delete=models.CASCADE)
+    user = models.ForeignKey(AppUser, on_delete=models.CASCADE, related_name="orders")
     phone_number = models.CharField(
         max_length=20,
         validators=[

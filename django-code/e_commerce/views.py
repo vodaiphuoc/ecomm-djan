@@ -8,11 +8,14 @@ from django.contrib.auth.views import LoginView
 from django.core.paginator import Paginator
 from django.db.models import Q
 from django.contrib import messages
-from .models import Product, Order, OrderItem
-from .cart import Cart
-from .forms import AppUserCreationForm, OrderForm
 from django.views.decorators.cache import cache_control
 from django.db import transaction
+from urllib.parse import urlencode
+
+from .models import Product, Order, OrderItem, Review
+from .cart import Cart
+from .forms import AppUserCreationForm, OrderForm, ReviewForm
+from .utils import generate_qr_code
 
 TEMPLATE_FOLDER_NAME = 'e_commerce'
 
@@ -37,7 +40,7 @@ class CustomLoginView(UserPassesTestMixin, LoginView):
 
     def handle_no_permission(self):
         next_url = self.request.GET.get('next')
-        print('next url: ', next_url)
+
         if next_url:
             return redirect(next_url)
         
@@ -56,12 +59,26 @@ def product_list(request: HttpRequest):
     return render(request, f'{TEMPLATE_FOLDER_NAME}/product_list.html', {'page_obj': page_obj, 'query': query})
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
-def product_detail(request: HttpRequest, id):
+def product_detail(request: HttpRequest, id:int):
     product = get_object_or_404(
         Product.objects.prefetch_related('reviews__user'),
         id=id
     )
-    return render(request, f'{TEMPLATE_FOLDER_NAME}/product_detail.html', {'product': product})
+    
+    allow_to_review: bool = Order.objects.filter(
+        user = request.user,
+        items__product=product
+    ).exists()
+
+    return render(
+        request, 
+        f'{TEMPLATE_FOLDER_NAME}/product_detail.html', 
+        {
+            'product': product,
+            'allow_to_review': allow_to_review,
+            'review_form': ReviewForm()
+        }
+    )
 
 @require_POST
 @login_required(login_url='/login/')
@@ -99,13 +116,11 @@ def checkout(request: HttpRequest):
                 
                 order.total_cost = cart.get_total_price()
                 order.save()
-
                 
                 order_items_to_commit = []
                 for item in cart:
                     product = item['product']
                     quantity = item['quantity']
-                    
                     
                     # Stock check
                     if product.stock < quantity:
@@ -125,12 +140,34 @@ def checkout(request: HttpRequest):
                 
                 OrderItem.objects.bulk_create(order_items_to_commit) 
                 
-                
                 # Clear cart and success message
                 cart.clear()
                 messages.success(request, "Order created successfully! 🎉")
                 
-                return render(request, f'{TEMPLATE_FOLDER_NAME}/order_created.html', {'order': order})
+                # make as success for demo purpose only
+                order.payment_status = 'SUCCESS'
+                order.save()
+
+                # fake bank account here
+                payment_info = {
+                    'acc': '000001111',
+                    'bank': 'myAppBank',
+                    'amount': order.total_cost,
+                    'orderId': order.id
+                }
+                
+                payment_url = request.build_absolute_uri(f"/mobile/img?{urlencode(payment_info)}")
+                qr_data_uri = generate_qr_code(payment_url)
+
+                return render(
+                    request, 
+                    f'{TEMPLATE_FOLDER_NAME}/order_created.html', 
+                    {
+                        'order': order,
+                        'qr_data_uri': qr_data_uri
+                    }
+                )
+            
 
         except ValueError as e:
             # Handle out-of-stock
@@ -148,3 +185,32 @@ def checkout(request: HttpRequest):
     else:
         messages.error(request, "Please correct the errors in the form.")
         return render(request, f'{TEMPLATE_FOLDER_NAME}/cart.html', {'form': form, 'cart': cart})
+    
+@require_POST
+def submit_review(request: HttpRequest, product_id: int):
+    form = ReviewForm(request.POST)
+    
+    if form.is_valid():
+        try:
+            with transaction.atomic():
+                
+                review: Review = form.save(commit=False)
+
+                product = Product.objects.get(id = product_id)
+                review.product = product
+                review.user = request.user
+
+                review.save()
+                return redirect(f'{TEMPLATE_FOLDER_NAME}:product_detail', id=product_id)
+
+        except Product.DoesNotExist:
+            messages.error(request, "The specified product does not exist.")
+            return redirect(f'{TEMPLATE_FOLDER_NAME}:product_list')
+
+        except Exception as e:
+            messages.error(request, "An unexpected error occurred during process review.")
+            return redirect(f'{TEMPLATE_FOLDER_NAME}:product_detail', id=product_id)
+
+    else:
+        messages.error(request, "Please correct the errors in the form.")
+        return redirect(f'{TEMPLATE_FOLDER_NAME}:product_detail', id=product_id)
