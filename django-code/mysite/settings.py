@@ -13,7 +13,8 @@ SECRET_KEY = os.environ['SECRET_KEY']
 
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'mullet-immortal-labrador.ngrok-free.app']
+CSRF_TRUSTED_ORIGINS = ['https://mullet-immortal-labrador.ngrok-free.app']
 
 # Application definition
 INSTALLED_APPS = [
@@ -24,7 +25,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.humanize',
-    'e_commerce',
+    'e_commerce'
 ]
 
 MIDDLEWARE = [

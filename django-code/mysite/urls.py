@@ -4,5 +4,5 @@ from django.conf import settings
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('e_commerce.urls')),
+    path('', include('e_commerce.urls'))
 ]
