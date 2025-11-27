@@ -7,3 +7,5 @@ emoji
 underthesea
 fasttext
 huggingface_hub
+qrcode
+pyngrok
