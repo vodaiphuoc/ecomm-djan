@@ -1,4 +1,5 @@
 Django
+django-health-check
 Pillow
 python-dotenv
 mysqlclient
@@ -8,4 +9,5 @@ underthesea
 fasttext
 huggingface_hub
 qrcode
-pyngrok
+uvicorn
+redis
