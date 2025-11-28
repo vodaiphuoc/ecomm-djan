@@ -40,7 +40,7 @@ def _update_product_mean_rating(product_id:int):
         product = Product.objects.get(pk=product_id)
         
         # Calculate the mean based on the 'score' field
-        average_result = product.reviews.exclude(ml_score__isnull=True).aggregate(Avg('score'))
+        average_result = product.reviews.exclude(score__isnull=True).aggregate(Avg('score'))
         
         # Update the Product and save
         product.mean_rating = average_result['score__avg']
