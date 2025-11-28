@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path, include
 from . import views
 from django.contrib.auth import views as auth_views
 
@@ -6,6 +6,7 @@ app_name = 'e_commerce'
 
 urlpatterns = [
     path('', views.product_list, name='product_list'),
+    path('health/', include('health_check.urls')),
     path('product/<int:id>/', views.product_detail, name='product_detail'),
     path('login/', views.CustomLoginView.as_view(),name='login'),
     path('logout/', auth_views.LogoutView.as_view(next_page='/'),name='logout'),
