@@ -95,14 +95,15 @@ def cart_remove(request: HttpRequest, product_id):
     cart.remove(product)
     return redirect(f'{TEMPLATE_FOLDER_NAME}:cart_detail')
 
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def cart_detail(request: HttpRequest):
     cart = Cart(request)
     return render(request, f'{TEMPLATE_FOLDER_NAME}/cart.html', {'cart': cart, 'form': OrderForm()})
 
 @require_POST
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def checkout(request: HttpRequest):
     cart = Cart(request)
-    
     form = OrderForm(request.POST)
 
     if form.is_valid():
@@ -142,7 +143,6 @@ def checkout(request: HttpRequest):
                 
                 # Clear cart and success message
                 cart.clear()
-                messages.success(request, "Order created successfully! 🎉")
                 
                 # make as success for demo purpose only
                 order.payment_status = 'SUCCESS'
