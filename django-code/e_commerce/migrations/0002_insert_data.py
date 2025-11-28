@@ -63,7 +63,7 @@ def load_product_data(apps: Apps, schema_editor):
 
     except FileNotFoundError:
         # Crucial for development safety
-        print("Initial product JSON file not found. Skipping data load.")
+        print("Initial product JSON file not found")
         return
 
     assert master_data is not None
