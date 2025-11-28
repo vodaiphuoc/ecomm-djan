@@ -5,16 +5,20 @@ from dotenv import load_dotenv
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+DEBUG = False
+
 # load secrets
-load_dotenv(os.path.join(BASE_DIR, ".env"))
+load_dotenv(os.path.join(
+    BASE_DIR, 
+    ".env" if not DEBUG else ".dev.env"
+))
 
 
 SECRET_KEY = os.environ['SECRET_KEY']
 
-DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'mullet-immortal-labrador.ngrok-free.app']
-CSRF_TRUSTED_ORIGINS = ['https://mullet-immortal-labrador.ngrok-free.app']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1','0.0.0.0']
+# CSRF_TRUSTED_ORIGINS = ['https://mullet-immortal-labrador.ngrok-free.app']
 
 # Application definition
 INSTALLED_APPS = [
@@ -25,6 +29,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.humanize',
+    'health_check',
+    'health_check.db',
     'e_commerce'
 ]
 
@@ -64,16 +70,18 @@ ASGI_APPLICATION = 'mysite.asgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': os.environ['DB_NAME'],
+        'NAME': os.environ['MYSQL_DATABASE'],
         'HOST': os.environ['DB_HOST'],
         'PORT': os.environ['DB_PORT'],
-        'USER': os.environ['DB_USER'],
-        'PASSWORD': os.environ['DB_PWD'],
+        'USER': os.environ['MYSQL_USER'],
+        'PASSWORD': os.environ['MYSQL_PASSWORD'],
         'OPTIONS': {
-            'charset': 'utf8mb4',
+            'charset': os.environ['MYSQL_CHARSET']
         },
     }
 }
+
+print('DATABASES: ',DATABASES)
 
 
 AUTH_USER_MODEL = 'e_commerce.AppUser'
@@ -104,6 +112,7 @@ USE_TZ = True
 USE_THOUSAND_SEPARATOR = True
 NUMBER_GROUPING = 3
 
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATIC_URL = 'static/'
 STATICFILES_FINDERS = [
     'django.contrib.staticfiles.finders.FileSystemFinder',
@@ -118,13 +127,3 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 SESSION_COOKIE_AGE = 1209600 # 2 weeks
 CART_SESSION_ID = 'cart'
-
-
-# Celery Configuration
-CELERY_BROKER_PORT = os.environ['CELERY_BROKER_PORT']
-CELERY_BROKER_URL = f'redis://redis:{CELERY_BROKER_PORT}/0' 
-CELERY_RESULT_BACKEND = f'redis://redis:{CELERY_BROKER_PORT}/0'
-CELERY_ACCEPT_CONTENT = [os.environ['CELERY_ACCEPT_CONTENT']]
-CELERY_TASK_SERIALIZER = os.environ['CELERY_TASK_SERIALIZER']
-CELERY_RESULT_SERIALIZER = os.environ['CELERY_RESULT_SERIALIZER']
-CELERY_TIMEZONE = os.environ['CELERY_TIMEZONE']
