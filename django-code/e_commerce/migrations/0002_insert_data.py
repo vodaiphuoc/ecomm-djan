@@ -2,7 +2,7 @@
 
 from django.db import migrations
 from django.apps.registry import Apps
-from django.utils.text import slugify
+from slugify import slugify
 from django.shortcuts import get_object_or_404
 from django.db.models import Avg
 import json
