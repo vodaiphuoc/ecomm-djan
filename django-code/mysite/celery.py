@@ -18,6 +18,7 @@ class CelerySettings:
     task_serializer=os.environ['TASK_SERIALIZER']
     result_serializer=os.environ['RESULT_SERIALIZER']
     timezone=os.environ['TIMEZONE']
+    worker_concurrency=int(os.environ['WORKER_CONCURRENCY'])
 
 app.config_from_object(CelerySettings)
 app.autodiscover_tasks()
