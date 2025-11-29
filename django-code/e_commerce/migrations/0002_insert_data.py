@@ -4,6 +4,7 @@ from django.db import migrations
 from django.apps.registry import Apps
 from django.utils.text import slugify
 from django.shortcuts import get_object_or_404
+from django.db.models import Avg
 import json
 from pathlib import Path
 import random
@@ -147,7 +148,17 @@ def load_product_data(apps: Apps, schema_editor):
                 ])
 
 
-                # 
+    # manually update mean rating in product
+    # signal wont triggered in migrations
+    for product in Product.objects.using(db_alias).all():
+        # Calculate the mean based on the 'score' field
+        average_result = product.reviews.exclude(score__isnull=True).aggregate(Avg('score'))
+        
+        # Update the Product and save
+        product.mean_rating = average_result['score__avg']
+        # Use update_fields
+        product.save(update_fields=['mean_rating'])
+        
 
 class Migration(migrations.Migration):
 
