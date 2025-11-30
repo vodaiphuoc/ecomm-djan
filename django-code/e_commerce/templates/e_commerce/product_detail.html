@@ -72,7 +72,7 @@
                 </h3>
                 <p class="card-text">{{ product.description | safe }}</p>
 
-                <form method="post" action="{% url 'e_commerce:cart_add' product.id %}" class="logout-form">
+                <form method="post" action="{% url 'e_commerce:cart_add' product.id %}?next={{ request.path }}" class="logout-form">
                     {% csrf_token %}
                     <button type="submit" class="btn btn-lg btn-primary mt-3">Thêm vào giỏ hàng</button>
                 </form>

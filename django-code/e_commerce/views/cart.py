@@ -18,7 +18,7 @@ def cart_add(request: HttpRequest, product_id: int):
     product = get_object_or_404(Product, id=product_id)
     cart.add(product=product)
     messages.success(request, "Added to cart")
-    return redirect(f'{TEMPLATE_FOLDER_NAME}:cart_detail')
+    return redirect(request.GET.get('next'))
 
 def cart_remove(request: HttpRequest, product_id):
     cart = Cart(request)
