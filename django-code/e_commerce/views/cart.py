@@ -26,6 +26,7 @@ def cart_remove(request: HttpRequest, product_id):
     cart.remove(product)
     return redirect(f'{TEMPLATE_FOLDER_NAME}:cart_detail')
 
+@login_required(login_url='/login/')
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def cart_detail(request: HttpRequest):
     cart = Cart(request)
