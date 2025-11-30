@@ -37,7 +37,7 @@
                         {% comment %} image as button and a tag must be inline {% endcomment %}
                         <div class="parent-item-head">
                             <a 
-                                href="{% url 'e_commerce:product_list' parent_cat.slug parent_cat.id %}" 
+                                href="{% url 'e_commerce:category_product_list' parent_cat.slug parent_cat.id %}" 
                                 class="parent-link"
                                 >
                                 <strong>{{ parent_cat.name }}</strong>
@@ -69,7 +69,7 @@
                                         {% for child_cat in parent_cat.subcategories %}
                                             <li class="child-item">
                                                 <a 
-                                                    href="{% url 'e_commerce:product_list' child_cat.slug child_cat.id%}" 
+                                                    href="{% url 'e_commerce:category_product_list' child_cat.slug child_cat.id%}" 
                                                     class="parent-link"
                                                     >
                                                     {{ child_cat.name }}
