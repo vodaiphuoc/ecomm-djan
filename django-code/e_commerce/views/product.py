@@ -2,19 +2,39 @@ from django.shortcuts import render, get_object_or_404
 from django.views.decorators.cache import cache_control
 from django.http import HttpRequest
 from django.core.paginator import Paginator
-from django.db.models import Q
+from django.db.models import Q, Prefetch
 
 TEMPLATE_FOLDER_NAME = 'e_commerce'
 
 from e_commerce.forms import ReviewForm
-from e_commerce.models import Product, Order
+from e_commerce.models import Product, Order, Category
 
-def product_list(request: HttpRequest):
-    query = request.GET.get('q')
-    products = Product.objects.all().order_by('-created_at')
-    if query:
-        products = products.filter(Q(name__icontains=query) | Q(description__icontains=query))
+def product_list(request: HttpRequest, category_slug:str = None, category_id: int = None):
     
+    parent_categories = Category.objects.filter(parent__isnull=True).order_by('name')
+    categories_tree = parent_categories.prefetch_related(
+        Prefetch('children', queryset=Category.objects.order_by('name'), to_attr='subcategories')
+    )
+    query = None
+
+    if category_slug is not None and category_id is not None:
+        target_parent_cate = categories_tree.filter(id=category_id).first()
+
+        if target_parent_cate:
+            sub_categories = target_parent_cate.subcategories
+            products = []
+            for sub_cate in sub_categories:
+                products.extend(sub_cate.products.all())
+        else:
+            taget_category = Category.objects.get(id = category_id, slug = category_slug)
+            products = Product.objects.filter(category = taget_category)
+
+    else:
+        query = request.GET.get('q')
+        products = Product.objects.all().order_by('-created_at')
+        if query:
+            products = products.filter(Q(name__icontains=query) | Q(description__icontains=query))
+
     paginator = Paginator(products, 12)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
@@ -24,7 +44,8 @@ def product_list(request: HttpRequest):
         f'{TEMPLATE_FOLDER_NAME}/product_list.html', 
         {
             'page_obj': page_obj, 
-            'query': query
+            'query': query,
+            'categories_tree': categories_tree
         }
     )
 

@@ -4,50 +4,127 @@
 
 {% block content %}
 
+{% load static %}
 {% load l10n %}
+
 <div class="row mb-4">
-    <div class="col-md-6">
+    <div class="col-md-3">
         <h1>Products</h1>
     </div>
-    <div class="col-md-6">
-        <form class="d-flex" action="{% url 'e_commerce:product_list' %}" method="get">
-            <input class="form-control me-2" type="search" name="q" placeholder="Search products..."
-                value="{{ query|default:'' }}">
-            <button class="btn btn-outline-primary" type="submit">Search</button>
-        </form>
+    <div class="col-md-9">
+        <div class="row">
+            <form class="d-flex" action="{% url 'e_commerce:product_list' %}" method="get">
+                <div class="input-group mb-3">
+                    <input class="form-control me-2" type="search" name="q" placeholder="Search products..."
+                        value="{{ query|default:'' }}">
+
+                    <button class="btn btn-outline-primary" type="submit">Tìm kiếm</button>
+                </div>
+            </form>
+        </div>        
     </div>
 </div>
 
-<div class="row row-cols-1 row-cols-md-3 g-4">
-    {% for product in page_obj %}
-        <div class="col">
-            <div class="card h-100">
-                {% if product.thumbnail_url %}
-                    <img src="{{ product.thumbnail_url }}" class="card-img-top" alt="{{ product.name }}"
-                        style="height: 200px; object-fit: cover;">
-                {% else %}
-                    <div class="bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
-                        <span class="text-muted">No Image</span>
-                    </div>
-                {% endif %}
-                <div class="card-body">
-                    <h5 class="card-title">{{ product.name }}</h5>
+<div class="row mb-4">
+    <div class="col-md-3">
+    {% comment %} left panel for category navigation {% endcomment %}
+        <nav class="category-menu">
+            <div class="parent-list">
+                
+                {% for parent_cat in categories_tree %}
+                    <div class="parent-item">
+
+                        {% comment %} image as button and a tag must be inline {% endcomment %}
+                        <div class="parent-item-head">
+                            <a 
+                                href="{% url 'e_commerce:product_list' parent_cat.slug parent_cat.id %}" 
+                                class="parent-link"
+                                >
+                                <strong>{{ parent_cat.name }}</strong>
+                            </a>
+                            
+                            <div
+                                class="flip-container"
+                                onclick="this.classList.toggle('flipped')"
+                                type="button"
+                                aria-expanded="false"
+                                aria-controls="collapse-{{ parent_cat.id }}"
+                                data-bs-toggle="collapse" 
+                                data-bs-target="#collapse-{{ parent_cat.id }}"
+                                >
+                                <div class="flipper">
+                                    <img 
+                                        src="{% static 'e_commerce/image/nav_arrow.png' %}" 
+                                        alt="category-nav-icon" 
+                                        class="category-nav-icon"
+                                    >
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="collapse" id="collapse-{{ parent_cat.id }}">
+                            {% if parent_cat.subcategories %}
+                                <div class="child-panel">
+                                    <ul class="child-list">
+                                        {% for child_cat in parent_cat.subcategories %}
+                                            <li class="child-item">
+                                                <a 
+                                                    href="{% url 'e_commerce:product_list' child_cat.slug child_cat.id%}" 
+                                                    class="parent-link"
+                                                    >
+                                                    {{ child_cat.name }}
+                                                </a>
+                                            </li>
+                                        {% endfor %}
+                                        
+                                    </ul>
+                                </div>
+                            {% endif %}
+                        </div>
                     
-                    <p class="card-text text-danger">
-                        {% localize on %}
-                            {{ product.price }}
-                        {% endlocalize %} đ
-                    </p>
-                    <a href="{% url 'e_commerce:product_detail' product.id %}" class="btn btn-primary w-100">View Details</a>
-                </div>
+                    </div>
+
+                {% endfor %}
+
             </div>
+        </nav>
+    </div>
+
+    <div class="col-md-9">
+    {% comment %} right panel for show product list {% endcomment %}
+        <div class="row row-cols-1 row-cols-md-3 g-4">
+            {% for product in page_obj %}
+                <div class="col">
+                    <div class="card h-100">
+                        {% if product.thumbnail_url %}
+                            <img src="{{ product.thumbnail_url }}" class="card-img-top" alt="{{ product.name }}"
+                                style="height: 200px; object-fit: cover;">
+                        {% else %}
+                            <div class="bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+                                <span class="text-muted">No Image</span>
+                            </div>
+                        {% endif %}
+                        <div class="card-body">
+                            <h5 class="card-title">{{ product.name }}</h5>
+                            
+                            <p class="card-text text-danger">
+                                {% localize on %}
+                                    {{ product.price }}
+                                {% endlocalize %} đ
+                            </p>
+                            <a href="{% url 'e_commerce:product_detail' product.id %}" class="btn btn-primary w-100">Xem chi tiết</a>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="col-12">
+                    <p class="text-center text-muted">Không tìm thấy sản phẩm nào</p>
+                </div>
+            {% endfor %}
         </div>
-        {% empty %}
-        <div class="col-12">
-            <p class="text-center text-muted">No products found.</p>
-        </div>
-    {% endfor %}
-</div>
+    </div>
+
+
 
 <div class="mt-4">
     <nav aria-label="Page navigation">
