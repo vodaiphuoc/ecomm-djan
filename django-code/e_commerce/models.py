@@ -61,7 +61,7 @@ class Product(models.Model):
     """
     name = models.CharField(max_length=255)
     slug = models.SlugField(max_length=255, unique=True)
-    category = models.ForeignKey(Category, on_delete = models.CASCADE)
+    category = models.ForeignKey(Category, on_delete = models.CASCADE, related_name="products")
     description = models.TextField(blank=True)
     brand_name = models.CharField(max_length=100)
     price = models.IntegerField()
