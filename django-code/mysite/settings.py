@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-DEBUG = False
+DEBUG = True
 
 # load secrets
 load_dotenv(os.path.join(
@@ -16,9 +16,7 @@ load_dotenv(os.path.join(
 
 SECRET_KEY = os.environ['SECRET_KEY']
 
-
 ALLOWED_HOSTS = ['localhost', '127.0.0.1','0.0.0.0']
-# CSRF_TRUSTED_ORIGINS = ['https://mullet-immortal-labrador.ngrok-free.app']
 
 # Application definition
 INSTALLED_APPS = [
@@ -81,9 +79,6 @@ DATABASES = {
     }
 }
 
-print('DATABASES: ',DATABASES)
-
-
 AUTH_USER_MODEL = 'e_commerce.AppUser'
 
 # Password validation
@@ -101,6 +96,8 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+
+APPEND_SLASH = False
 
 # Internationalization
 
