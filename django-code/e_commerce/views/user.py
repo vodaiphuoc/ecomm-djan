@@ -1,8 +1,9 @@
 from django.contrib.auth import login
 from django.shortcuts import render, redirect
 from django.contrib.auth.mixins import UserPassesTestMixin
-from django.contrib.auth.views import LoginView
+from django.contrib.auth.views import LoginView, PasswordChangeView
 from django.http import HttpRequest
+from django.contrib.auth.forms import PasswordChangeForm
 
 from e_commerce.forms import AppUserCreationForm
 
@@ -34,3 +35,9 @@ class CustomLoginView(UserPassesTestMixin, LoginView):
             return redirect(next_url)
         
         return redirect(f'/')
+
+class CustomPwdChangeView(PasswordChangeView):
+    template_name = f'{TEMPLATE_FOLDER_NAME}/pwd_change.html'
+    success_url= '/'
+    form_class=PasswordChangeForm
+    
