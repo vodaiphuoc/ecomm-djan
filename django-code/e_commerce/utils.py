@@ -51,12 +51,3 @@ def generate_qr_code(url: str)->str:
     
     # Return the data URI string
     return f"data:image/png;base64,{qr_base64}"
-
-# --- Note: In a real app, you would also need a model for a temporary token:
-# from django.db import models
-# class PaymentToken(models.Model):
-#     token = models.CharField(max_length=64, unique=True)
-#     order = models.ForeignKey(Order, on_delete=models.CASCADE)
-#     is_used = models.BooleanField(default=False)
-#     created_at = models.DateTimeField(auto_now_add=True)
-#     # TTL logic (e.g., delete tokens older than 15 minutes)
