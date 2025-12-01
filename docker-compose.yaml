@@ -24,8 +24,6 @@ services:
     build:
       context: .
       dockerfile: ./django-code/Dockerfile
-    # env_file:
-    #   - ./django-code/.env
     depends_on:
       mysql_ecomm:
         condition: service_healthy
@@ -58,8 +56,6 @@ services:
     image: ecomm-django-image
     working_dir: /app
     entrypoint: celery -A mysite worker -l info
-    # env_file:
-    #   - ./django-code/.env
     depends_on:
       redis:
         condition: service_healthy
