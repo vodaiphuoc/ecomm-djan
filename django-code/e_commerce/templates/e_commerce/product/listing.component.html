@@ -4,8 +4,11 @@
         <div class="col">
             <div class="card h-100">
                 {% if product.thumbnail_url %}
-                    <img src="{{ product.thumbnail_url }}" class="card-img-top" alt="{{ product.name }}"
-                        style="height: 200px; object-fit: cover;">
+                    <img 
+                        src="{{ product.thumbnail_url }}"
+                        class="card-img-top listing-img-thumbnail" 
+                        alt="{{ product.name }}"
+                        >
                 {% else %}
                     <div class="bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
                         <span class="text-muted">No Image</span>

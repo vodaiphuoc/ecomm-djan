@@ -2,7 +2,6 @@ from pathlib import Path
 import os
 from dotenv import load_dotenv
 
-
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 DEBUG = True
@@ -29,7 +28,8 @@ INSTALLED_APPS = [
     'django.contrib.humanize',
     'health_check',
     'health_check.db',
-    'e_commerce'
+    'e_commerce',
+    'csp'
 ]
 
 MIDDLEWARE = [
@@ -40,6 +40,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'csp.middleware.CSPMiddleware'
 ]
 
 ROOT_URLCONF = 'mysite.urls'
@@ -56,10 +57,36 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'e_commerce.context_processors.cart',
+                'csp.context_processors.nonce'
             ],
         },
     },
 ]
+
+
+from csp.constants import SELF, NONCE
+
+CONTENT_SECURITY_POLICY = {
+    "EXCLUDE_URL_PREFIXES": ["/admin"],
+    "DIRECTIVES": {
+        "default-src": [SELF],
+        "script-src": [
+            SELF,
+            NONCE,
+            "https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+        ],
+        "style-src": [
+            SELF, 
+            NONCE, 
+            "https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css", 
+            "https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+        ],
+        "img-src": [SELF, "https://salt.tikicdn.com"],
+        "font-src": ["https://cdn.jsdelivr.net"]
+    },
+}
+
+
 
 # WSGI_APPLICATION = 'mysite.wsgi.application'
 ASGI_APPLICATION = 'mysite.asgi.application'

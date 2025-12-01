@@ -25,4 +25,21 @@ document.addEventListener('DOMContentLoaded', function() {
             mainProductImage.src = thumbnailItems[0].dataset.largeImage;
         }
     }
+
+    avatarElement = document.getElementById('avatar-initials-main')
+    if (avatarElement) {
+        const colorValue = avatarElement.dataset.color;
+
+        // Assign the style using JavaScript (which is trusted by the nonce)
+        if (colorValue) {
+            avatarElement.style.backgroundColor = colorValue;
+        }
+    }
+
 });
+
+
+document.getElementById('flip-button').addEventListener('click', function() {
+    this.classList.toggle('flipped');
+});
+
