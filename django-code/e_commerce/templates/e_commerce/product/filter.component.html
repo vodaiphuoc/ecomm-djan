@@ -1,0 +1,66 @@
+{% load static %}
+<button 
+    type="button" 
+    class="btn btn-outline-primary" 
+    data-bs-toggle="modal" 
+    data-bs-target="#priceFilterModal"
+    id="price-filter-button"
+    >
+    <img 
+        src="{% static 'e_commerce/image/filter.png' %}" 
+        alt="price-filter-icon" 
+        class="price-filter-icon"
+    >
+    <p id="price-filter-button-label">Lọc theo khoảng giá</p>
+</button>
+
+<!-- Modal for price filter-->
+<div 
+    class="modal fade" 
+    id="priceFilterModal" 
+    tabindex="-1" 
+    aria-labelledby="priceFilterModalLabel"
+    aria-hidden="true"
+    >
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="priceFilterModalLabel">Khoảng giá</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form 
+                    method="get" 
+                    action="{{ request.path }}"
+                    >
+                    
+                    <div class="input-group">
+                        <span class="input-group-text">Từ</span>
+                        <input 
+                            type="text" 
+                            class="form-control js-localize-input"
+                            placeholder="nhỏ nhất"
+                            name="price_min" 
+                            id="price_min" 
+                            value="{{ query.price_min|default:'' }}"
+                            >
+                    
+                        <span class="input-group-text">đến</span>
+                        <input 
+                            type="text" 
+                            class="form-control js-localize-input"
+                            placeholder="lớn nhất" 
+                            name="price_max" 
+                            id="price_max" 
+                            value="{{ query.price_max|default:'' }}"
+                            >
+                        <span class="input-group-text">đ</span>
+                    </div>
+                    <button type="submit" class="btn btn-lg btn-primary mt-3" data-bs-dismiss="modal">Áp dụng</button>
+                </form>
+                
+                
+            </div>
+        </div>
+    </div>
+</div>
