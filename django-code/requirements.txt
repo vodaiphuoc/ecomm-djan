@@ -13,3 +13,4 @@ uvicorn
 redis
 python-slugify
 django-csp
+django-ratelimit

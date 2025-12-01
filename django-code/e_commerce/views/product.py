@@ -10,6 +10,9 @@ TEMPLATE_FOLDER_NAME = 'e_commerce'
 from e_commerce.forms import ReviewForm
 from e_commerce.models import Product, Order, Category
 
+from django_ratelimit.decorators import ratelimit
+
+@ratelimit(key='ip', rate='5/m', block=True)
 def product_list(
         request: HttpRequest, 
         category_slug:str = None, 
