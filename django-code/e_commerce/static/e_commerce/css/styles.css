@@ -115,7 +115,7 @@ body {
 }
 
 /* 4. Button */
-.btn:not(.btn-light) {
+.btn:not(.btn-outline-primary):not(.btn-light) {
     display: block;
     width: 100%;
     padding: 12px;

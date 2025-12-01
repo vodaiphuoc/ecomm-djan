@@ -1,6 +1,15 @@
 .category-menu {
-    border: 1px solid #ccc;
+    margin-top: 10px;
+    margin-bottom: 10px;
     border-radius: 10px;
+    background-color: white;
+}
+
+.category-menu-header {
+    font-size: medium;
+    padding: 10px;
+    margin: 0px;
+    border-bottom: 3px solid #f8f9fa;
 }
 
 .category-nav-icon {
@@ -18,16 +27,17 @@
 .parent-item {
     width: 100%;
     min-height: 8vh;
-    /* position: relative; */
-    /* border-bottom: 1px solid #eee; */
     display: block;
+    justify-content: center;
+    border-bottom: 1px solid #eee;
 }
 
 .parent-item-head {
     width: 100%;
-    /* min-height: 8vh; */
     position: relative;
-    border-bottom: 1px solid #eee;
+    padding: 0px;
+    margin: 0px;
+    /* border-bottom: 1px solid #eee; */
     display: flex;
     align-items: center;
 }
@@ -35,6 +45,7 @@
 .parent-link {
     display: block;
     padding: 10px;
+    margin: 0px;
     text-decoration: none;
     color: #333;
     flex-grow: 1;
@@ -55,6 +66,16 @@
     font-size: small;
 }
 
+.child-link {
+    display: block;
+    padding: 5px 0px 5px 30px; /* Top, right, bottom, left */
+    text-decoration: none;
+    color: #333;
+}
+
+.child-link:hover {
+    color: #a599fc;
+}
 
 .flip-container {
     perspective: 1000px;
