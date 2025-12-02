@@ -10,5 +10,4 @@ web_env
 erd.jpeg
 dev.note.md
 *.bin
-**/staticfiles/admin/
-**/staticfiles/e_commerce/
+**/staticfiles/
