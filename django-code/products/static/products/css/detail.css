@@ -1,0 +1,17 @@
+.mean-rating-container {
+    display: flex;
+    align-items: center;
+    width: 30vw;
+}
+
+#emoji-smile-icon {
+    color: greenyellow;
+    font-size: 2rem;
+    display: block;
+    margin-right: 1rem;
+}
+
+.signin-alert {
+    display: flex;
+    justify-content: center;
+}

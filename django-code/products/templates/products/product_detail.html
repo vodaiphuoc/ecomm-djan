@@ -44,15 +44,16 @@
                 <h2 class="card-title fw-bold">{{ product.name }}</h2>
 
                 {% if mean_rating %}
-                    <div style="display: flex;align-items: center;width: 30vw;">
+                    <div class="mean-rating-container">
                         <h5 class="card-text text-black m-3">
                             {% localize off %}
                                 {{ mean_rating }}
                             {% endlocalize %} %
                         </h5>
                         <i 
+                            id="emoji-smile-icon"
                             class="bi bi-emoji-smile" 
-                            style="color: greenyellow;font-size: 2rem;display: block;margin-right: 1rem;"
+                            style=""
                             >
                         </i>
                         <i 
@@ -120,7 +121,7 @@
 
                 {% else %}
                 {% comment %} for anonymous user {% endcomment %}
-                    <div style="display: flex;justify-content: center;">
+                    <div class="signin-alert">
                         <a class="nav-link"
                             href="{% url 'accounts:login' %}?next={{ request.path }}">
                             <u>Đăng nhập</u>
