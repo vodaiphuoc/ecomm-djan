@@ -1,0 +1,34 @@
+{% load l10n %}
+<div class="row row-cols-1 row-cols-md-3 g-4 listing-section">
+    {% for product in page_obj %}
+        <div class="col">
+            <div class="card h-100">
+                {% if product.thumbnail_url %}
+                    <img 
+                        src="{{ product.thumbnail_url }}"
+                        class="card-img-top listing-img-thumbnail" 
+                        alt="{{ product.name }}"
+                        >
+                {% else %}
+                    <div class="bg-light d-flex listing-img-thumbnail-failed">
+                        <span class="text-muted">No Image</span>
+                    </div>
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title">{{ product.name }}</h5>
+                    
+                    <p class="card-text text-danger">
+                        {% localize on %}
+                            {{ product.price }}
+                        {% endlocalize %} đ
+                    </p>
+                    <a href="{% url 'products:product_detail' product.id %}" class="btn btn-primary w-100">Xem chi tiết</a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <p class="text-center text-muted">Không tìm thấy sản phẩm nào</p>
+        </div>
+    {% endfor %}
+</div>

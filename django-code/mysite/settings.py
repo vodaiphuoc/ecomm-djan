@@ -28,8 +28,12 @@ INSTALLED_APPS = [
     'django.contrib.humanize',
     'health_check',
     'health_check.db',
-    'e_commerce',
-    'csp'
+    'csp',                  # <-- for Content securiy policy
+    'accounts',
+    'carts',
+    'orders',
+    'products',
+    'reviews'
 ]
 
 MIDDLEWARE = [
@@ -48,7 +52,7 @@ ROOT_URLCONF = 'mysite.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': ["templates"],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -56,7 +60,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'e_commerce.context_processors.cart',
+                'carts.context_processors.cart',
                 'csp.context_processors.nonce'
             ],
         },
@@ -106,7 +110,7 @@ DATABASES = {
     }
 }
 
-AUTH_USER_MODEL = 'e_commerce.AppUser'
+AUTH_USER_MODEL = 'accounts.AppUser'
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
@@ -138,6 +142,13 @@ NUMBER_GROUPING = 3
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATIC_URL = 'static/'
+
+# this is for global scope static files
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'), 
+]
+
+# this is config for collect all static of each app
 STATICFILES_FINDERS = [
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',

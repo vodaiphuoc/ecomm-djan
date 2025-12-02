@@ -1,0 +1,62 @@
+{% load static %}
+<nav class="category-menu">
+    <p class="category-menu-header"><strong>Khám phá theo danh mục</strong></p>
+    <div class="parent-list">
+        
+        {% for parent_cat in categories_tree %}
+            <div class="parent-item">
+
+                {% comment %} image as button and a tag must be inline {% endcomment %}
+                <div class="parent-item-head">
+                    <a 
+                        href="{% url 'products:category_product_list' parent_cat.slug parent_cat.id %}" 
+                        class="parent-link"
+                        >
+                        <strong>{{ parent_cat.name }}</strong>
+                    </a>
+                    
+                    <div
+                        class="flip-container"
+                        id="flip-button"
+                        type="button"
+                        aria-expanded="false"
+                        aria-controls="collapse-{{ parent_cat.id }}"
+                        data-bs-toggle="collapse" 
+                        data-bs-target="#collapse-{{ parent_cat.id }}"
+                        >
+                        <div class="flipper">
+                            <img 
+                                src="{% static 'products/image/nav_arrow.png' %}" 
+                                alt="category-nav-icon" 
+                                class="category-nav-icon"
+                            >
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="collapse" id="collapse-{{ parent_cat.id }}">
+                    {% if parent_cat.subcategories %}
+                        <div class="child-panel">
+                            <ul class="child-list">
+                                {% for child_cat in parent_cat.subcategories %}
+                                    <li class="child-item">
+                                        <a 
+                                            href="{% url 'products:category_product_list' child_cat.slug child_cat.id %}" 
+                                            class="child-link"
+                                            >
+                                            {{ child_cat.name }}
+                                        </a>
+                                    </li>
+                                {% endfor %}
+                                
+                            </ul>
+                        </div>
+                    {% endif %}
+                </div>
+            
+            </div>
+
+        {% endfor %}
+
+    </div>
+</nav>

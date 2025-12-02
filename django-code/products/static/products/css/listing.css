@@ -1,0 +1,14 @@
+.listing-section {
+    justify-content: center;
+}
+
+.listing-img-thumbnail {
+    height: 200px; 
+    object-fit: cover;
+}
+
+.listing-img-thumbnail-failed {
+    align-items: center;
+    justify-content: center;
+    height: 200px;
+}

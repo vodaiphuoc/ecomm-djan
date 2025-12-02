@@ -1,0 +1,216 @@
+body { 
+    background-color: #f8f9fa; 
+    font-family: 'Inter', 
+    sans-serif; 
+    min-height: 100vh;
+    width: 100vw;
+    display: flex;
+    flex-direction: column;
+    /* align-items: center; */
+}
+
+header {
+    flex-shrink: 0;
+    width: inherit;
+}
+
+main {
+    flex-grow: 1;
+    width: inherit;
+}
+
+footer {
+    margin-top: 1vh;
+    flex-shrink: 0;
+    width: inherit;
+}
+
+.navbar { 
+    background-color: #fff; 
+    box-shadow: 0 2px 4px rgba(0,0,0,.04); 
+    max-height: 10vh;
+}
+
+.nav-item
+.nav-link {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    align-content: center;
+    justify-content: center;
+    width: 8vw;
+    height: 100%;
+}
+
+.cart-nav-icon {
+    width: 60%;
+    height: 60%;
+    padding: 0;
+    margin: 0;
+}
+
+.card { 
+    border: none; 
+    transition: transform 0.2s; 
+    box-shadow: 0 2px 8px rgba(0,0,0,.05); 
+}
+
+.card:hover { 
+    transform: translateY(-5px); 
+    box-shadow: 0 4px 12px rgba(0,0,0,.1); 
+}
+
+.btn-primary { 
+    background-color: #0d6efd; 
+    border: none; 
+}
+
+.btn-primary:hover { 
+    background-color: #0b5ed7; 
+}
+
+.main-image-display img {
+    max-width: 100%;
+    max-height: 450px;
+    object-fit: contain;
+    border: 1px solid #dee2e6;
+}
+
+.thumbnail-item {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: border-color 0.2s ease-in-out, transform 0.2s ease-in-out;
+}
+
+.thumbnail-item:hover {
+    border-color: #007bff;
+    transform: translateY(-2px);
+}
+
+.thumbnail-item.active {
+    border-color: #007bff;
+    box-shadow: 0 0 0 0.15rem rgba(0, 123, 255, 0.25);
+}
+
+
+/* 1. Container and Card */
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 80vh; /* Centers vertically */
+}
+
+.login-card {
+    background-color: #ffffff;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px; /* Constrains the width */
+}
+
+.card-title {
+    text-align: center;
+    color: #333;
+    margin-bottom: 25px;
+}
+
+/* 2. Form Fields */
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 600;
+    color: #555;
+}
+
+/* 3. Inputs (Targeting the rendered {{ field }}) */
+.login-form input[type="text"], 
+.login-form input[type="password"] {
+    width: 100%;
+    padding: 10px 15px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    box-sizing: border-box; /* Ensures padding doesn't affect total width */
+    transition: border-color 0.3s;
+}
+
+.login-form input[type="text"]:focus, 
+.login-form input[type="password"]:focus {
+    border-color: #007bff; /* Primary color on focus */
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+}
+
+/* 4. Button */
+.btn:not(.btn-outline-primary):not(.btn-light) {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 700;
+    transition: background-color 0.3s;
+    margin-top: 15px;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+}
+
+
+/* 5. Errors and Links */
+.error-message {
+    color: #dc3545;
+    font-size: 0.9em;
+    margin-top: 5px;
+}
+
+.register-link {
+    text-align: center;
+    margin-top: 20px;
+}
+
+
+/* for avatar */
+.user-avatar {
+    /* General dimensions and shape */
+    width: 40px;
+    height: 40px;
+    border-radius: 50%; 
+    overflow: hidden;
+    display: inline-flex; 
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    font-weight: bold;
+    color: white; 
+}
+
+.avatar-initials {
+    /* Ensure the span fills the div */
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* The background color is applied INLINE in the HTML */
+}
+
+.avatar-img {
+    /* For the actual uploaded image */
+    width: 100%;
+    height: 100%;
+    object-fit: cover; 
+}

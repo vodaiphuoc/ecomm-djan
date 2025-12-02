@@ -1,0 +1,72 @@
+{% load static %}
+
+<nav class="navbar navbar-expand-lg navbar-light mb-4">
+    <div class="container">
+        <a class="navbar-brand fw-bold" href="{% url 'products:product_list' %}">E-commerce Store</a>
+        <div class="collapse navbar-collapse">
+            {% if user.is_authenticated %}
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'carts:cart_detail' %}">
+                            <img 
+                                src="{% static 'image/cart-nav.svg' %}" 
+                                alt="cart-nav-icon" 
+                                class="cart-nav-icon"
+                            >
+                            {% if cart|length > 0 %}
+                                <span class="badge bg-primary rounded-pill">{{ cart|length }}</span>
+                            {% endif %}
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <div class="dropdown">
+                            <button 
+                                class="btn btn-light dropdown-toggle" 
+                                type="button" 
+                                id="dropdownMenuButton1" 
+                                data-bs-toggle="dropdown" 
+                                aria-expanded="false"
+                                >
+                                <div class="user-avatar">
+                                    {% if user.avatar %}
+                                        <img src="{{ user.avatar }}" alt="{{ user.get_initial }}" class="avatar-img">
+                                    {% else %}
+                                        <span 
+                                            class="avatar-initials"
+                                            id="avatar-initials-main"
+                                            data-color="{{ user.get_avatar_color }}"
+                                            >
+                                            {{ user.get_initial }}
+                                        </span>
+                                    {% endif %}
+                                </div>
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                <li><a class="dropdown-item" href="{% url 'accounts:pwd_change' %}">Đổi mật khẩu</a></li>
+                                <li>
+                                    <form method="post" action="{% url 'accounts:logout' %}" class="logout-form">
+                                        {% csrf_token %}
+                                        <button type="submit" class="dropdown-item">Đăng xuất</button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </div>    
+                    </li>
+                </ul>
+            {% else %}
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'accounts:login' %}?next={{ request.path }}">
+                            Đăng nhập
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'accounts:register' %}">
+                            Đăng ký
+                        </a>
+                    </li>
+                </ul>
+            {% endif %}
+        </div>
+    </div>
+</nav>

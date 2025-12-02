@@ -16,8 +16,8 @@ RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
 
 # copy later
-COPY ./django-code/mysite ./mysite
-COPY ./django-code/e_commerce ./e_commerce
+COPY ./django-code/ /app
+
 COPY ./django-code/manage.py .
 COPY ./django-code/.env ./.env
 COPY ./django-code/.celery.env ./.celery.env

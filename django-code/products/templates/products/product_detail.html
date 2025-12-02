@@ -1,0 +1,138 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ product.name }} - E-commerce Store{% endblock %}
+
+{% block content %}
+{% load l10n %}
+<div class="card mb-3">
+    <div class="row g-0">
+        <div class="col-md-4">
+            <div class="product-image-gallery">
+                <div class="main-image-display mb-3 text-center">
+                    {% if product.images.all %}
+                        <img 
+                            src="{{ product.images.first.image_url }}" 
+                            alt="{{ product.name }} main image" 
+                            class="img-fluid rounded shadow-sm max-width: 40%" 
+                            id="mainProductImage"
+                        >
+                    {% else %}
+                        <img 
+                            src="https://via.placeholder.com/600x600?text=No+Image" 
+                            alt="No Image Available" 
+                            class="img-fluid rounded shadow-sm"
+                        >
+                    {% endif %}
+                </div>
+            
+                <div class="thumbnail-strip d-flex flex-wrap justify-content-center gap-2">
+                    {% for img in product.images.all %}
+                        <img 
+                            src="{{ img.image_url }}" 
+                            alt="{{ product.name }} thumbnail {{ forloop.counter }}" 
+                            class="img-thumbnail rounded-3 thumbnail-item {% if forloop.first %}active{% endif %}" 
+                            data-large-image="{{ img.image_url }}"
+                        >
+                    {% empty %}
+                    {% endfor %}
+                </div>
+            </div>
+
+        </div>
+        <div class="col-md-8">
+            <div class="card-body">
+                <h2 class="card-title fw-bold">{{ product.name }}</h2>
+
+                {% if mean_rating %}
+                    <div style="display: flex;align-items: center;width: 30vw;">
+                        <h5 class="card-text text-black m-3">
+                            {% localize off %}
+                                {{ mean_rating }}
+                            {% endlocalize %} %
+                        </h5>
+                        <i 
+                            class="bi bi-emoji-smile" 
+                            style="color: greenyellow;font-size: 2rem;display: block;margin-right: 1rem;"
+                            >
+                        </i>
+                        <i 
+                            class="bi bi-info-circle"
+                            data-bs-placement="right" 
+                            data-bs-toggle="tooltip"
+                            data-bs-title="Tỷ lệ người dùng cảm thấy hài lòng"
+                            >
+                        </i>
+                    </div>
+                {% endif %}
+                
+                <h3 class="card-text text-danger mb-3">
+                    {% localize on %}
+                        {{ product.price }}
+                    {% endlocalize %} đ
+                </h3>
+                <p class="card-text">{{ product.description | safe }}</p>
+
+                <form method="post" action="{% url 'carts:cart_add' product.id %}?next={{ request.path }}" class="logout-form">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-lg btn-primary mt-3">Thêm vào giỏ hàng</button>
+                </form>
+            </div>
+
+            <div class="card-body">
+                <h4 class="card-title mb-4 border-bottom pb-2">
+                    Nhận xét khách hàng (<span class="text-primary">{{ product.reviews.count }}</span>)
+                </h4>
+
+                {% if user.is_authenticated %}
+                    {% comment %} for registered user {% endcomment %}
+
+                    {% comment %} loading reviews {% endcomment %}
+                    {% if product.reviews.all %}
+                        <div class="review-list">
+                            
+                            {% for review in product.reviews.all %}
+                                <div class="card shadow-sm mb-4 review-card">
+                                    <div class="card-body">
+                                        
+                                        <div class="d-flex justify-content-between align-items-center mb-2 border-bottom pb-2">
+                                            <div class="fw-bold text-dark">
+                                                <i class="bi bi-person-circle me-1"></i> User: {{ review.user.username }}
+                                            </div>
+                                        </div>
+
+                                        <p class="card-text text-muted mb-0">
+                                            {{ review.content }}
+                                        </p>
+
+                                    </div>
+                                </div>
+                            {% endfor %}
+                
+                        </div>
+                    {% else %}
+                        <p class="text-center text-muted py-3">Chưa có review nào cho sản phẩm này!</p>
+                    {% endif %}
+
+                    {% comment %} load review form with condition {% endcomment %}
+                    {% if allow_to_review %}
+                        {% include "views/review_form.html" %}
+                    {% endif %}
+
+                {% else %}
+                {% comment %} for anonymous user {% endcomment %}
+                    <div style="display: flex;justify-content: center;">
+                        <a class="nav-link"
+                            href="{% url 'accounts:login' %}?next={{ request.path }}">
+                            <u>Đăng nhập</u>
+                        </a>
+                        <p class="card-text ms-1">để xem tất cả review</p>
+                    </div>
+                {% endif %}
+
+            </div>
+
+
+        </div>
+    </div>
+</div>
+{% endblock %}

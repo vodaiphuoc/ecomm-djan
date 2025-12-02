@@ -1,0 +1,24 @@
+{% extends './base.html' %}
+
+{% block title %}Đơn hàng thành công - E-commerce Store{% endblock %}
+
+{% block content %}
+{% load l10n %}
+<div class="text-center mt-5">
+    <h1 class="text-success mb-4">Đơn hàng được tạo thành công</h1>
+    <p class="lead">Cảm ơn <strong>{{ order.user.first_name }}</strong> đã đặt hàng</p>
+    <p>Your order ID is <strong>#{{ order.id }}</strong>.</p>
+    <p>Total Amount: <strong>{% localize on %}{{ order.total_cost }}{% endlocalize %} đ</strong></p>
+
+    <p class="text-gray-500 mt-2">Scan QR code dưới đây để thanh toán</p>
+    <div class="flex justify-center items-center p-4 bg-white rounded-xl shadow-inner border border-gray-200">
+        <img
+            src="{{ qr_data_uri }}"
+            alt="Payment QR Code for Order #{{ order.id }}" 
+            class="w-64 h-64 border border-gray-300 rounded-lg"
+        >
+    </div>
+
+    <a href="{% url 'products:product_list' %}" class="btn btn-primary mt-4">Tiếp tục mua sắm</a>
+</div>
+{% endblock %}

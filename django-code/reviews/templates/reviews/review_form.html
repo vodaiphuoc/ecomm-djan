@@ -1,0 +1,15 @@
+<div class="review-form-container">
+    <h3>Hãy submit bài review của bạn</h3>
+    <form method="post" class="login-form" action="{% url 'reviews:submit_review' product.id %}">
+            {% csrf_token %}
+            {% for field in review_form %}
+                <div class="form-group">
+                    {{ field.label_tag }}
+                    {{ field }}
+                </div>
+            {% endfor %}
+            
+            <button type="submit" class="btn btn-primary">Đăng review</button>
+    </form>
+
+</div>
