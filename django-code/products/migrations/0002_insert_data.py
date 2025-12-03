@@ -9,6 +9,7 @@ import json
 from pathlib import Path
 import random
 import string
+import bleach
 
 from accounts.models import AppUser as AppUserModel
 from products.models import Product as ProductModel
@@ -18,8 +19,22 @@ from reviews.models import Review as ReviewModel
 
 from reviews.ml_service import get_predictor_instance
 
+
+ALLOWED_ATTRIBUTES = {
+    'a': ['href', 'title'],
+    'img': ['src','alt']
+}
+
 def _random_string(length:int = 10):
     return ''.join(random.choices(string.ascii_letters + string.digits, k=length))
+
+def clean_description(content:str):
+    return bleach.clean(
+        content,
+        tags=['h1','h2', 'h3', 'h4','h5','strong','a','i','b', 'li','ul','p','img','div'],
+        attributes=ALLOWED_ATTRIBUTES,
+        strip=True
+    )
 
 def load_product_data(apps: Apps, schema_editor):
     model_instance = get_predictor_instance()
@@ -89,7 +104,7 @@ def load_product_data(apps: Apps, schema_editor):
                 name = product_data['product_name'],
                 slug = slugify(product_data['product_name'][:255]),
                 category = subcategory,
-                description = product_data['description'],
+                description = clean_description(product_data['description']),
                 brand_name = product_data['brand_name'],
                 price = product_data['price'],
                 stock = product_data['stock'],
