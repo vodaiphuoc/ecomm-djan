@@ -20,6 +20,9 @@ class Category(models.Model):
         unique_together = ('slug', 'parent',) 
         verbose_name_plural = "Categories"
 
+    def __str__(self):
+        return self.name
+
 class Product(models.Model):
     r"""
     Schema for product table
