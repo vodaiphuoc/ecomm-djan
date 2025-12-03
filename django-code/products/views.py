@@ -87,7 +87,7 @@ def product_detail(request: HttpRequest, id:int):
             id=id
         )
 
-        rounded_mean_rating = round(product.mean_rating*100,1) if product.mean_rating else None
+        rounded_mean_rating = round(product.mean_rating*100,1) if product.mean_rating is not None else None
         
         allow_to_review = None
         if request.user.is_authenticated:

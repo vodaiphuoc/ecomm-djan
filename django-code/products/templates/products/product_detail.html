@@ -43,7 +43,7 @@
             <div class="card-body">
                 <h2 class="card-title fw-bold">{{ product.name }}</h2>
 
-                {% if mean_rating %}
+                {% if mean_rating is not None %}
                     <div class="mean-rating-container">
                         <h5 class="card-text text-black m-3">
                             {% localize off %}
