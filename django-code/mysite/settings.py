@@ -85,7 +85,7 @@ CONTENT_SECURITY_POLICY = {
             "https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css", 
             "https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
         ],
-        "img-src": [SELF, "https://salt.tikicdn.com"],
+        "img-src": [SELF, "data:","https://salt.tikicdn.com"],
         "font-src": ["https://cdn.jsdelivr.net"]
     },
 }
