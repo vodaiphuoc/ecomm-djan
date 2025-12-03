@@ -12,7 +12,7 @@ from reviews.forms import ReviewForm
 from products.models import Product, Category
 from orders.models import Order
 
-# @ratelimit(key='ip', rate='5/m', block=True)
+@ratelimit(key='ip', rate='5/m', block=True)
 def product_list(
         request: HttpRequest, 
         category_slug:str = None, 

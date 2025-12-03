@@ -79,6 +79,10 @@
             </div>
 
             <div class="card-body">
+                {% if not allow_to_review %}
+                    <p class="text-center">mua sản phẩm để được viết review</p>
+                {% endif %}
+
                 <h4 class="card-title mb-4 border-bottom pb-2">
                     Nhận xét khách hàng (<span class="text-primary">{{ product.reviews.count }}</span>)
                 </h4>
