@@ -23,14 +23,4 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    avatarElement = document.getElementById('avatar-initials-main')
-    if (avatarElement) {
-        const colorValue = avatarElement.dataset.color;
-
-        // Assign the style using JavaScript (which is trusted by the nonce)
-        if (colorValue) {
-            avatarElement.style.backgroundColor = colorValue;
-        }
-    }
-
 });
