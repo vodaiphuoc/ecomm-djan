@@ -70,7 +70,7 @@
                         {{ product.price }}
                     {% endlocalize %} đ
                 </h3>
-                <div class="card-text">{{ product.description | safe }}</div>
+                <div class="card-text detail-description">{{ product.description | safe }}</div>
 
                 <form method="post" action="{% url 'carts:cart_add' product.id %}?next={{ request.path }}" class="logout-form">
                     {% csrf_token %}
