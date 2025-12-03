@@ -37,7 +37,6 @@
                                         <span 
                                             class="avatar-initials"
                                             id="avatar-initials-main"
-                                            data-color="{{ user.get_avatar_color }}"
                                             >
                                             {{ user.get_initial }}
                                         </span>
@@ -84,3 +83,9 @@
         </div>
     </div>
 </nav>
+{% comment %} get random color of the user and assign into `user-avatar-color` variable {% endcomment %}
+<style nonce="{{ CSP_NONCE }}"> 
+    :root { 
+        --user-avatar-color: {{ user.get_avatar_color }};
+    }
+</style>
