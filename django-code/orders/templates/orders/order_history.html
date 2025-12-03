@@ -1,0 +1,140 @@
+{% extends 'base.html' %}
+
+{% block title %}Lịch sử  đơn hàng - E-commerce Store{% endblock %}
+
+{% block content %}
+{% load l10n %}
+
+<div class="container order-container">
+    <header class="order-header">
+        <h4 class="display-7 fw-bold text-primary">Lịch sử đơn hàng của {{ user.username }}</h4>
+    </header>
+
+    {% if error_message %}
+        <div class="alert alert-danger rounded-lg" role="alert">
+            <strong>Error:</strong> {{ error_message }}
+        </div>
+    {% elif orders %}
+        <div class="table-responsive">
+            <table class="table table-hover align-middle bg-white rounded-3 shadow-sm">
+                <thead class="bg-light">
+                    <tr>
+                        <th scope="col" class="text-uppercase text-secondary">
+                            Order ID
+                        </th>
+                        <th scope="col" class="text-uppercase text-secondary">
+                            Date Placed
+                        </th>
+                        <th scope="col" class="text-uppercase text-secondary">
+                            Total Cost
+                        </th>
+                        <th scope="col" class="text-uppercase text-secondary">
+                            Status
+                        </th>
+                        <th scope="col" class="text-uppercase text-secondary">
+                            Details
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for order in orders %}
+                        <tr class="shadow-sm rounded-lg mb-2">
+                            <td>#{{ order.id }}</td>
+                            <td>{{ order.created_at|date:"F d, Y P" }}</td>
+                            <td>
+                                {% localize on %}
+                                    {{ order.total_cost|default:"0" }}
+                                {% endlocalize %} đ
+                            </td>
+                            <td>
+                                <span class="badge status-badge-{{ order.payment_status }} p-2 rounded-pill fw-bold">
+                                    {{ order.payment_status }}
+                                </span>
+                            </td>
+                            <td>
+                                <button 
+                                    type="button" 
+                                    class="btn btn-sm btn-outline-primary rounded-pill" 
+                                    data-bs-toggle="modal" 
+                                    data-bs-target="#orderDetailModal-{{ order.id }}"
+                                    >
+                                    View Items ({{ order.items.count }})
+                                </button>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        {% comment %} modal for order items {% endcomment %}
+        {% for order in orders %}
+            <div 
+                class="modal fade" 
+                id="orderDetailModal-{{ order.id }}" 
+                tabindex="-1" 
+                aria-labelledby="orderDetailModalLabel-{{ order.id }}" 
+                aria-hidden="true"
+                >
+                <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+                    <div class="modal-content rounded-xl shadow-2xl">
+                        <div class="modal-header bg-primary text-white rounded-top-lg">
+                            <h5 class="modal-title fw-bold" id="orderDetailModalLabel-{{ order.id }}">Order #{{ order.id }} Details</h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <h6 class="fw-bold mb-3">Order Summary:</h6>
+                            <ul class="list-group mb-4 rounded-lg">
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    Status
+                                    <span class="badge status-badge-{{ order.payment_status }} p-2 rounded-pill fw-bold">{{ order.payment_status }}</span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    Total Paid
+                                    <span class="fw-bold text-success">
+                                        {% localize on %}
+                                            {{ order.total_cost|default:"0" }}
+                                        {% endlocalize %} đ
+                                    </span>
+                                </li>
+                                <li class="list-group-item">
+                                    <strong class="text-primary">Shipping Address:</strong> <br>
+                                    {{ order.address }} <br>
+                                    <strong class="text-primary">Contact:</strong> {{ order.phone_number }}
+                                </li>
+                            </ul>
+
+                            <h6 class="fw-bold mb-3">Items in Order:</h6>
+                            <ul class="list-group list-group-flush rounded-lg border">
+                                {% for item in order.items.all %}
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div class="flex-grow-1">
+                                        <strong>{{ item.product.name|default:"[Product Removed]" }}</strong>
+                                        <div class="text-muted small">
+                                            Quantity: {{ item.quantity }} | Unit Price: {% localize on %}{{ item.product.price|default:"0" }}{% endlocalize %} đ
+                                        </div>
+                                    </div>
+                                    <span class="fw-bold">
+                                        {% localize on %}
+                                            {{ item.get_cost|default:"0" }}
+                                        {% endlocalize %} đ
+                                    </span>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+
+    {% else %}
+        <div class="text-center p-5 bg-light rounded-3">
+            <h2 class="text-muted mb-3">Chưa có đơn hàng nào</h2>
+            <a href="{% url 'products:product_list' %}" class="btn btn-primary mt-4">Tiếp tục mua sắm</a>
+        </div>
+    {% endif %}
+
+</div>
+{% endblock %}

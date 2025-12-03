@@ -12,7 +12,6 @@ from carts.cart import Cart
 from orders.forms import OrderForm
 from orders.utils import generate_qr_code
 
-
 TEMPLATE_FOLDER_NAME = 'orders'
 
 @require_POST
@@ -63,7 +62,7 @@ def checkout(request: HttpRequest):
                 order.payment_status = 'SUCCESS'
                 order.save()
 
-                return redirect(f'{TEMPLATE_FOLDER_NAME}:order_complete')
+                return redirect(f'{TEMPLATE_FOLDER_NAME}:order_complete', order_id = order.id)
 
         except ValueError as e:
             # Handle out-of-stock
@@ -111,3 +110,36 @@ def order_complete(request: HttpRequest, order_id: int):
             'qr_data_uri': qr_data_uri
         }
     )
+
+
+@login_required
+def order_history(request: HttpRequest):
+    """
+    Fetches all orders associated with the currently logged-in user.
+    Orders are retrieved in descending order of creation time.
+    """
+    try:
+        # Query the database for orders belonging to the current user (request.user)
+        # We use .select_related('user') to optimize the initial query
+        # and .prefetch_related('items__product') to efficiently load all related OrderItems and their Products
+        orders = Order.objects.filter(user=request.user).select_related('user').prefetch_related('items__product')
+
+        return render(
+            request, 
+            f'{TEMPLATE_FOLDER_NAME}/order_history.html', 
+            {
+                'orders': orders,
+                'user': request.user
+            }
+        )
+
+    except Exception as e:
+        print(f"Error fetching order history: {e}")
+        return render(
+            request, 
+            f'{TEMPLATE_FOLDER_NAME}/order_history.html', 
+            {
+                'orders': [],
+                'error_message': 'Could not retrieve order history due to an internal error.'
+            }
+        )
