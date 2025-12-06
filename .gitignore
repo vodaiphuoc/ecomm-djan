@@ -1,13 +1,15 @@
 **/__pycache__
-# .env
-.dev.env
-# .celery.env
+**/.env
+**/.dev.env
+**/.celery.env
+**/.admin.env
+
 test.env
 test*.py
 **/test.py
-train_env
-web_env
+*env/
 erd.jpeg
 dev.note.md
 *.bin
 **/staticfiles/
+crawl_data2db/master_data*.json

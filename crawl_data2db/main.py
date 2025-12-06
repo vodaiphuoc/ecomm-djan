@@ -5,6 +5,7 @@ from typing import List, Dict
 import json
 import os
 from tqdm.asyncio import tqdm
+import time 
 
 class MyCustomError(Exception):
     """
@@ -61,6 +62,18 @@ class Crawl_TIKI_data(Request_Data):
         {
             "name": "beauty-health",
             "id": 1520
+        },
+        {
+            "name": "man-fashion",
+            "id": 915
+        },
+        {
+            "name": "camera",
+            "id": 1801
+        },
+        {
+            "name": "sports-outdoor",
+            "id": 1975
         }
     ]
 
@@ -98,8 +111,13 @@ class Crawl_TIKI_data(Request_Data):
     @staticmethod
     def review_json_filter(json_data: dict):
         data = json_data['data']
-        if isinstance(data, list) and len(data) != 0:
-            return [ele['content'] for ele in data if ele['content'] != ""]
+        if isinstance(data, list):
+            return [{
+                "content":ele['content'] ,
+                "images": ele['image']
+            }
+                for ele in data if ele['content'] != ""
+                ]
         else:
             raise MyCustomError
 
@@ -254,8 +272,8 @@ class Crawl_TIKI_data(Request_Data):
             
             master_id_list.extend(id_list)
             
-            if ith == 3:
-                break
+            # if ith == 3:
+            #     break
         
         for ith, prod_id in tqdm(
                 enumerate(master_id_list), 
@@ -266,8 +284,11 @@ class Crawl_TIKI_data(Request_Data):
             
             if not isinstance(result, bool):
                 database.append(result)
-                
-            if len(database) > 20:
+            
+            if ith % 20 == 0:
+                time.sleep(5.0)
+
+            if len(database) > 600:
                 break
                 
         return {
@@ -286,9 +307,11 @@ async def main():
         *tasks
     )
     
-    
-    with open(os.path.join(os.path.dirname(__file__),"master_data.json"), "w", encoding='utf-8') as fp:
+    with open(os.path.join("master_data.json"), "w", encoding='utf-8') as fp:
         json.dump(master_data, fp, ensure_ascii=False, indent=4)
+
+    # with open(os.path.join(os.path.dirname(__file__),"master_data.json"), "w", encoding='utf-8') as fp:
+    #     json.dump(master_data, fp, ensure_ascii=False, indent=4)
 
     
 if __name__ == "__main__":
