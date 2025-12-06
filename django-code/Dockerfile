@@ -43,5 +43,6 @@ COPY --from=builder /app /app
 COPY --from=builder /usr/local/bin/ /usr/local/bin/
 
 RUN chmod +x /usr/local/bin/entrypoint.sh
+RUN sed -i 's/\r$//' /usr/local/bin/entrypoint.sh
 
 ENTRYPOINT ["entrypoint.sh"]
