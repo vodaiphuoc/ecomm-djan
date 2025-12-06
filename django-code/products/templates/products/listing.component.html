@@ -1,6 +1,6 @@
 {% load l10n %}
 <div class="row row-cols-1 row-cols-md-3 g-4 listing-section">
-    {% for product in page_obj %}
+    {% for product in page_obj.object_list %}
         <div class="col">
             <div class="card h-100">
                 {% if product.thumbnail_url %}
